@@ -1,0 +1,14 @@
+[req]
+default_bits=2048
+prompt=no
+default_md=sha256
+distinguished_name=dn
+
+[dn]
+C=GT
+ST=Guatemala
+L=Guatemala City
+O=Omega, Inc.
+OU=Winc
+emailAddress=estuardo.quan@gmail.com
+CN = nrp-dev.local

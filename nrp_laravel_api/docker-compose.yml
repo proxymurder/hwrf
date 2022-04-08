@@ -1,0 +1,25 @@
+version: "3.9"
+networks: 
+ local:
+  driver: bridge
+services:
+ www:
+  image: nginx
+  volumes:
+   - ./src:/var/www/html
+   - ./etc/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+  ports:
+   - 80
+  depends_on:
+   - php
+  networks:
+   - local
+ php:
+  build:
+   context: ./src
+  volumes:
+   - ./src:/var/www/html
+  ports: 
+   - 9000
+  networks:
+   - local

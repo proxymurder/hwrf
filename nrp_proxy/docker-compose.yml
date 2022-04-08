@@ -1,0 +1,17 @@
+version: "3.9"
+networks:
+ api:
+  external:
+   name: nrp_laravel_api_local
+services:
+ www:
+  image: nginx
+  volumes:
+    - ./etc/nginx/conf.d/nrp-dev.conf:/etc/nginx/conf.d/nrp-dev.conf
+    - ./etc/ssl/certs/nginx:/etc/ssl/certs/nginx
+    - ./etc/nginx/opt:/etc/nginx/opt
+  networks:
+    - api
+  ports:
+    - 80:80
+    - 443:443
