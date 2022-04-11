@@ -3,9 +3,9 @@ networks:
  api:
   external:
    name: api_local
- app:
+ main:
   external:
-   name: app_local
+   name: main_local
 services:
  www:
   image: nginx
@@ -15,7 +15,7 @@ services:
     - ./ssl/certs:/etc/ssl/certs/nginx
   networks:
     - api
-    - app
+    - main
   ports:
     - 80:80
     - 443:443
