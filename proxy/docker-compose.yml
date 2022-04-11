@@ -11,7 +11,8 @@ services:
   image: nginx
   volumes:
     - ./nginx/conf.d:/etc/nginx/conf.d
-    - ./nginx/opt:/etc/nginx/opt
+    - ./nginx/proxy.conf:/etc/nginx/proxy.conf
+    - ./nginx/ssl.conf:/etc/nginx/ssl.conf
     - ./ssl/certs:/etc/ssl/certs/nginx
   networks:
     - api
