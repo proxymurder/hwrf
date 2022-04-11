@@ -10,7 +10,7 @@ services:
  www:
   image: nginx
   volumes:
-    - ./nginx/nrp-dev.conf:/etc/nginx/conf.d/nrp-dev.conf
+    - ./nginx/conf.d:/etc/nginx/conf.d
     - ./nginx/opt:/etc/nginx/opt
     - ./ssl/certs:/etc/ssl/certs/nginx
   networks:
