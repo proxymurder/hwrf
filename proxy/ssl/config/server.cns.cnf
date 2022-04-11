@@ -11,4 +11,4 @@ L=Guatemala City
 O=Omega, Inc.
 OU=Winc
 emailAddress=estuardo.quan@gmail.com
-CN = nrp-dev.local
+CN = reverse-proxy.local

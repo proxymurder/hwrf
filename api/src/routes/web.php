@@ -13,13 +13,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+$url = config('app.url');
 
-Route::domain('api.nrp-dev.local')->group(function () {
+
+Route::domain('api.' . $url)->group(function () {
     Route::get('/', function () {
         return view('welcome');
     });
 });
-Route::domain('auth.nrp-dev.local')->group(function () {
+Route::domain('auth.' . $url)->group(function () {
     Route::get('/', function () {
         return view('welcome');
     });
