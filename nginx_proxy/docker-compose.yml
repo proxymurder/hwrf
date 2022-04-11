@@ -2,17 +2,17 @@ version: "3.9"
 networks:
  api:
   external:
-   name: nrp_laravel_api_local
+   name: api_local
  app:
   external:
-   name: nrp_vue_app_local
+   name: app_local
 services:
  www:
   image: nginx
   volumes:
-    - ./etc/nginx/conf.d/nrp-dev.conf:/etc/nginx/conf.d/nrp-dev.conf
-    - ./etc/ssl/certs/nginx:/etc/ssl/certs/nginx
-    - ./etc/nginx/opt:/etc/nginx/opt
+    - ./nginx/nrp-dev.conf:/etc/nginx/conf.d/nrp-dev.conf
+    - ./nginx/opt:/etc/nginx/opt
+    - ./ssl/certs:/etc/ssl/certs/nginx
   networks:
     - api
     - app
