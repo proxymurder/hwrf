@@ -3,6 +3,9 @@ networks:
  api:
   external:
    name: nrp_laravel_api_local
+ app:
+  external:
+   name: nrp_vue_app_local
 services:
  www:
   image: nginx
@@ -12,6 +15,7 @@ services:
     - ./etc/nginx/opt:/etc/nginx/opt
   networks:
     - api
+    - app
   ports:
     - 80:80
     - 443:443

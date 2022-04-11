@@ -13,10 +13,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/home', function () {
-    return view('welcome');
+
+Route::domain('api.nrp-dev.local')->group(function () {
+    Route::get('/', function () {
+        return view('welcome');
+    });
 });
-Route::domain('auth.laravel_api')->group(function () {
+Route::domain('auth.nrp-dev.local')->group(function () {
     Route::get('/', function () {
         return view('welcome');
     });
