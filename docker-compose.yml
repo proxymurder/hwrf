@@ -1,0 +1,81 @@
+version: '3.9'
+networks:
+  local:
+    driver: bridge
+  api:
+    driver: bridge
+  main:
+    driver: bridge
+volumes:
+  mysql:
+    driver: local
+services:
+  db:
+    image: mysql:latest
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: reverse_proxy
+    ports:
+      - 3306
+    networks:
+      - api
+  php:
+    build:
+      context: ./api/src
+    volumes:
+      - ./api/src:/var/www/html
+    ports:
+      - 9000
+    depends_on:
+      - db
+    networks:
+      - api
+  api_www:
+    image: nginx
+    volumes:
+      - ./api/src:/var/www/html
+      - ./api/nginx/conf.d:/etc/nginx/conf.d
+    ports:
+      - 80
+    depends_on:
+      - db
+      - php
+    networks:
+      - local
+      - api
+  main_www:
+    image: nginx
+    volumes:
+      - ./main/app/dist:/usr/share/nginx/html
+      - ./main/nginx/conf.d:/etc/nginx/conf.d
+    ports:
+      - 80
+    depends_on:
+      - db
+      - php
+      - api_www
+    networks:
+      - local
+      - main
+  www:
+    image: nginx
+    volumes:
+      - ./proxy/nginx/conf.d:/etc/nginx/conf.d
+      - ./proxy/nginx/proxy.conf:/etc/nginx/proxy.conf
+      - ./proxy/nginx/ssl.conf:/etc/nginx/ssl.conf
+      - ./proxy/ssl/certs:/etc/ssl/certs/nginx
+    depends_on:
+      - db
+      - php
+      - api_www
+      - main_www
+    networks:
+      - local
+    ports:
+      - 80:80
+      - 443:443
