@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use LaravelJsonApi\Laravel\Facades\JsonApiRoute;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+$url = config('app.url');
+
+JsonApiRoute::server('test')
+    ->domain('api.' . $url)
+    ->resources(function ($server) {
+        Route::get('/test', function (Request $request) {
+            return response()->json([
+                'connection' => 'success!!!'
+            ]);
+        });
+    });
+
+Route::domain('api.' . $url)->group(function () {
 });
+
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
