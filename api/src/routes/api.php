@@ -15,10 +15,10 @@ use LaravelJsonApi\Laravel\Facades\JsonApiRoute;
 |
 */
 
-$url = config('app.url');
+$url = 'api.' . config('app.url');
 
 JsonApiRoute::server('test')
-    ->domain('api.' . $url)
+    ->domain($url)
     ->resources(function ($server) {
         Route::get('/test', function (Request $request) {
             return response()->json([
@@ -26,9 +26,6 @@ JsonApiRoute::server('test')
             ]);
         });
     });
-
-Route::domain('api.' . $url)->group(function () {
-});
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();

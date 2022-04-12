@@ -87,7 +87,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 export default {
 	name: 'HelloWorld',
 	props: {
@@ -96,7 +95,7 @@ export default {
 		},
 	},
 	mounted() {
-		axios
+		this.axios
 			.get('https://api.reverse-proxy.local/test')
 			.then((res) => {
 				console.log(res);
