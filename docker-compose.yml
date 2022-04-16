@@ -1,10 +1,10 @@
 version: '3.9'
 networks:
-  local:
+  local_network:
     driver: bridge
-  api:
+  api_network:
     driver: bridge
-  main:
+  main_network:
     driver: bridge
 volumes:
   mysql:
@@ -12,8 +12,6 @@ volumes:
 services:
   db:
     image: mysql:latest
-    restart: unless-stopped
-    tty: true
     volumes:
       - mysql:/var/lib/mysql
     environment:
@@ -23,7 +21,7 @@ services:
     ports:
       - 3306
     networks:
-      - api
+      - api_network
   php:
     build:
       context: ./api/src
@@ -34,24 +32,48 @@ services:
     depends_on:
       - db
     networks:
-      - api
+      - api_network
   api_www:
-    image: nginx
+    image: nginx:latest
     volumes:
       - ./api/src:/var/www/html
       - ./api/nginx/conf.d:/etc/nginx/conf.d
+      - ./api/nginx/proxy.conf:/etc/nginx/proxy.conf
     ports:
       - 80
     depends_on:
       - db
       - php
     networks:
-      - local
-      - api
-  main_www:
-    image: nginx
+      - local_network
+      - api_network
+  npm:
+    image: node:alpine
     volumes:
-      - ./main/app/dist:/usr/share/nginx/html
+      - ./api/src:/var/www/html
+    depends_on:
+      - db
+      - php
+      - api_www
+    working_dir: /var/www/html
+    entrypoint: ['npm']
+    command: ['run', 'watch']
+    networks:
+      - api_network
+  main:
+    image: node:alpine
+    working_dir: /usr/share/nginx/html
+    volumes:
+      - ./main/app:/usr/share/nginx/html
+    depends_on:
+      - main_www
+    command: ['npm', 'run', 'watch']
+    networks:
+      - main_network
+  main_www:
+    image: nginx:latest
+    volumes:
+      - ./main/app:/usr/share/nginx/html
       - ./main/nginx/conf.d:/etc/nginx/conf.d
     ports:
       - 80
@@ -60,22 +82,22 @@ services:
       - php
       - api_www
     networks:
-      - local
-      - main
+      - local_network
+      - main_network
   www:
-    image: nginx
+    image: nginx:latest
     volumes:
+      - ./proxy/ssl/certs:/etc/ssl/certs/nginx
       - ./proxy/nginx/conf.d:/etc/nginx/conf.d
       - ./proxy/nginx/proxy.conf:/etc/nginx/proxy.conf
       - ./proxy/nginx/ssl.conf:/etc/nginx/ssl.conf
-      - ./proxy/ssl/certs:/etc/ssl/certs/nginx
     depends_on:
       - db
       - php
       - api_www
       - main_www
     networks:
-      - local
+      - local_network
     ports:
       - 80:80
       - 443:443

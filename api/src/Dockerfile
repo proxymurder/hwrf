@@ -1,13 +1,22 @@
 FROM php:fpm
 
-RUN docker-php-ext-install pdo pdo_mysql
+
+RUN docker-php-ext-install pdo pdo_mysql sockets
 
 RUN apt-get update && apt-get install -y \
+    git \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
 
+RUN echo '#!/bin/bash\nphp artisan "$@"' > /usr/local/bin/artisan \
+    && chmod +x /usr/local/bin/artisan
+
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
+ENV PATH=${PATH}:vendor/bin
+   
 RUN chown -R www-data:www-data /var/www
 RUN chmod 755 /var/www
