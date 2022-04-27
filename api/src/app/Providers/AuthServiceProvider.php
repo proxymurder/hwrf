@@ -26,7 +26,11 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         Passport::routes(
-            fn ($router) => $router->forAccessTokens(),
+            function ($router) {
+                $router->forAuthorization();
+                $router->forAccessTokens();
+                $router->forTransientTokens();
+            },
             [
                 'domain' => 'auth.' . config('app.url')
             ]
