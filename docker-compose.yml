@@ -49,6 +49,7 @@ services:
       - api_network
   npm:
     image: node:alpine
+    user: node
     volumes:
       - ./api/src:/var/www/html
     depends_on:

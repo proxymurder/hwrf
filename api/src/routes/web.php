@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\OAuth\AuthController;
 use Illuminate\Support\Facades\Route;
+use Laravel\Passport\Passport;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,10 +17,12 @@ use Illuminate\Support\Facades\Route;
 
 $url = config('app.url');
 
-Route::domain('auth.' . $url)->group(function () {
-    Route::get('/', function () {
-        return view('welcome');
-    });
+Route::domain('oauth.' . $url)->group(function () {
+    Route::view('login', 'login');
+    Route::post('login', [
+        AuthController::class,
+        'login',
+    ])->name('login');
     Route::get('/test', function () {
         return view('test');
     });

@@ -32,7 +32,8 @@ class AuthServiceProvider extends ServiceProvider
                 $router->forTransientTokens();
             },
             [
-                'domain' => 'auth.' . config('app.url')
+                'domain' => 'oauth.' . config('app.url'),
+                'prefix' => '',
             ]
         );
     }
