@@ -23,7 +23,4 @@ Route::domain('oauth.' . $url)->group(function () {
         AuthController::class,
         'login',
     ])->name('login');
-    Route::get('/test', function () {
-        return view('test');
-    });
 });

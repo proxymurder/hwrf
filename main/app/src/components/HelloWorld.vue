@@ -12,8 +12,9 @@ const props = defineProps({
 	},
 });
 const axios = inject('axios');
+const oauth = JSON.parse(localStorage.getItem('oauth'));
 axios
-	.get('https://api.reverse-proxy.local/test')
+	.get('https://api.reverse-proxy.local/tests/foo')
 	.then((res) => {
 		console.log(res);
 	})
@@ -21,19 +22,4 @@ axios
 		console.log(err);
 	});
 </script>
-<style scoped>
-h3 {
-	margin: 40px 0 0;
-}
-ul {
-	list-style-type: none;
-	padding: 0;
-}
-li {
-	display: inline-block;
-	margin: 0 10px;
-}
-a {
-	color: #42b983;
-}
-</style>
+<style lang="scss"></style>

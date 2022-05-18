@@ -1,47 +1,97 @@
 <template>
 	<div>
-		<nav class="nav align-items-center">
-			<div class="p-2">
-				<img :src="logo" :alt="logo" />
+		<div
+			class="w-100 p-2 gradient-fade position-fixed d-flex align-items-center z-10 gradient-fade"
+			ref="nav"
+		>
+			<div class="w-20 d-flex align-content-center justify-content-around">
+				<SvgLogo />
 			</div>
-			<router-link class="nav-link" to="/">Home</router-link>
-			<router-link class="nav-link" to="/about">About</router-link>
-		</nav>
-		<router-view />
+			<nav class="w-60 nav d-flex align-content-center">
+				<router-link class="nav-link me-3 rounded" to="/">Home</router-link>
+				<router-link class="nav-link me-3 rounded" to="/about"
+					>About</router-link
+				>
+			</nav>
+			<div class="w-20 d-flex align-content-center justify-content-around">
+				<Login />
+				<Logout />
+			</div>
+		</div>
+		<main class="position-absolute w-100" v-scroll="scroll">
+			<router-view />
+		</main>
 	</div>
 </template>
 <script setup>
-import logo from '@/assets/reverse_proxy_logo.png';
+import { computed, ref } from 'vue';
+import SvgLogo from '@/components/SvgLogo.vue';
+import Login from '@/components/Login.vue';
+import Logout from '@/components/Logout.vue';
+
+const nav = ref();
+
+function scroll(e, el) {
+	if (window.scrollY >= 10) {
+		nav.value.style.backgroundColor = '#181818';
+	} else {
+		nav.value.style.backgroundColor = 'unset';
+	}
+}
 </script>
 <style lang="scss">
-nav {
-	background-color: gray('100');
-}
-nav img {
-	width: 50px;
-}
-
 body {
 	margin: 0;
+	color: $gray-200;
 }
 
-a {
-	text-decoration: none;
+nav > .nav-link {
+	color: $gray-200;
 }
 
-// #app {
-// 	font-family: Avenir, Helvetica, Arial, sans-serif;
-// 	-webkit-font-smoothing: antialiased;
-// 	-moz-osx-font-smoothing: grayscale;
-// 	color: #2c3e50;
-// }
+nav > .nav-link:hover {
+	color: $gray-600;
+}
 
-// nav a {
-// 	font-weight: bold;
-// 	color: $black;
-// 	padding: 0 10px;
-// }
-nav a.router-link-exact-active {
+nav > .nav-link.router-link-exact-active {
+	color: $gray-900;
+	background-image: linear-gradient(180deg, $pink-200, $teal-200);
+}
+nav > .nav-link.router-link-exact-active:hover {
+	color: $gray-900;
+}
+
+div > .nav-link {
+	color: $gray-900;
+	background-image: linear-gradient(125deg, $pink-200, $teal-200);
+	cursor: pointer;
+	transition: all 500ms;
+}
+
+div > .nav-link:hover {
 	color: $gray-800;
+	animation: gradient-animation 2000ms;
+	animation-fill-mode: both;
+}
+
+.gradient-fade {
+	@include gradient-y-three-colors($black-800, $black-300, 50%, $black-00);
+	transition: background 1000ms;
+}
+
+@keyframes gradient-animation {
+	@each $key, $value in $range-100 {
+		#{$value} {
+			background-image: linear-gradient(
+				#{(125 + 4 * ($key)/10) + 'deg'},
+				$pink-200,
+				$teal-200
+			);
+		}
+	}
+}
+
+.border-box {
+	box-sizing: border-box;
 }
 </style>

@@ -25,6 +25,7 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+
         Passport::routes(
             function ($router) {
                 $router->forAuthorization();
@@ -36,5 +37,7 @@ class AuthServiceProvider extends ServiceProvider
                 'prefix' => '',
             ]
         );
+
+        Passport::tokensCan([]);
     }
 }

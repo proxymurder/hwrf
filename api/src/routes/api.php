@@ -19,10 +19,13 @@ $url = 'api.' . config('app.url');
 
 JsonApiRoute::server('test')
     ->domain($url)
+    ->prefix('tests')
     ->resources(function ($server) {
-        Route::get('/test', function (Request $request) {
+        Route::get('/foo', function (Request $request) {
             return response()->json([
-                'connection' => 'success!!!'
+                'connection' => 'success!!!',
+                'another' => true,
+                'user_id' => optional(auth('api')->user())->id,
             ]);
         });
     });
