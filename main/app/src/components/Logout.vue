@@ -1,13 +1,24 @@
 <template>
-	<div class="nav-link rounded" @click="redirect" v-if="isAuthenticated">
-		Logout
-	</div>
+	<div class="nav-link rounded" @click="redirect" v-if="auth.check">Logout</div>
 </template>
 
 <script setup>
-import { useOAuth } from '@/oauth.js';
+import { inject } from 'vue';
+const axios = inject('axios');
+const auth = inject('auth');
+const { routes } = inject('env');
 
-const { isAuthenticated } = useOAuth();
+function redirect() {
+	axios
+		.post(routes.api.logout)
+		.then((res) => {
+			console.log(res);
+			auth.jwt = null;
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+}
 </script>
 
 <style></style>

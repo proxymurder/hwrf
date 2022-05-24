@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\OAuth\AuthController;
+use App\Http\Controllers\OAuth\AuthorizationController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Passport\Passport;
 
@@ -15,12 +16,23 @@ use Laravel\Passport\Passport;
 |
 */
 
-$url = config('app.url');
+$url = 'oauth.' . config('app.url');
 
-Route::domain('oauth.' . $url)->group(function () {
-    Route::view('login', 'login');
-    Route::post('login', [
-        AuthController::class,
-        'login',
-    ])->name('login');
-});
+Route::domain($url)
+    ->group(
+        function () {
+            Route::view('login', 'login');
+            Route::name('login')
+                ->post('login', [
+                    AuthController::class,
+                    'login',
+                ]);
+
+            Route::middleware('auth')
+                ->name('passport.authorizations.authorize')
+                ->get('/authorize', [
+                    AuthorizationController::class,
+                    'authorize'
+                ]);
+        }
+    );

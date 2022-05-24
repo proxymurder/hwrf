@@ -26,8 +26,10 @@ $utilities: (
 			'bg-opacity': 1,
 		),
 		values:
-			map-merge(
+			map-merge-multiple(
 				$theme-colors,
+				$whites,
+				$blacks,
 				(
 					'transparent': transparent,
 				)

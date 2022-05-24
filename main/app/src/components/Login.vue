@@ -1,35 +1,32 @@
 <template>
-	<div class="nav-link rounded" @click="redirect" v-if="guest">Login</div>
+	<div class="nav-link rounded" @click="redirect" v-if="display">Login</div>
 </template>
 
 <script setup>
 import crypto from 'crypto-js';
-import { useOAuth } from '@/oauth.js';
+import { computed, inject, reactive } from 'vue';
 
-const { guest } = useOAuth();
+const auth = inject('auth');
+const { routes, clients } = inject('env');
+
+const display = computed(() => {
+	return auth.guest && !auth.pending;
+});
 
 function redirect(e) {
 	e.preventDefault();
-
-	if (guest.value) {
-		const route = 'https://oauth.reverse-proxy.local/authorize';
-		const client = '964d71ff-b5a9-4012-85ec-d50edeb7beae';
-		const redirect = 'https://reverse-proxy.local/callback';
-		const scope = '';
-		const state = strgen(40);
-		const verifier = strgen(128);
-		const challenge = encode(verifier);
-
-		localStorage.setItem('state', state);
-		localStorage.setItem('verifier', verifier);
+	if (auth.guest) {
+		auth.state = strgen(40);
+		auth.verifier = strgen(128);
+		const challenge = encode(auth.verifier);
 
 		const url =
-			`${route}?` +
-			`client_id=${client}&` +
-			`redirect_uri=${redirect}&` +
+			`${routes.oauth.authorize}?` +
+			`client_id=${clients.api.id}&` +
+			`redirect_uri=${routes.api.redirect}&` +
 			`response_type=code&` +
 			`scope=&` +
-			`state=${state}&` +
+			`state=${auth.state}&` +
 			`code_challenge=${challenge}&` +
 			`code_challenge_method=S256`;
 

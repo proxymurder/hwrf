@@ -46,6 +46,13 @@ class AuthController extends Controller
         ]);;
     }
 
+    public function logout(Request $request)
+    {
+        request()->user()->token()->revoke();
+        // return response()->json(request()->getClientIps());
+        return response()->noContent();
+    }
+
     /**
      * Attempt to log the user into the application.
      *

@@ -1,5 +1,5 @@
-@extends('layout');
-@section('content');
+@extends('layout')
+@section('content')
     <main class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
@@ -8,6 +8,8 @@
                         Authorization Request
                     </div>
                     <div class="card-body">
+                        <pre>{{var_dump($request->session())}}</pre>
+                        <pre>{{var_dump($request->user()->getAuthIdentifier())}}</pre>
                         <!-- Introduction -->
                         <p><strong>{{ $client->name }}</strong> is requesting permission to access your account.</p>
 

@@ -23,7 +23,7 @@
                         src="/storage/reverse_proxy_logo.png"
                         class="mb-3 w-50"
                     />
-                    <span class="mb-3 display-6">Login</>
+                    <span class="mb-3 display-6">Login<span/>
                 </div>
                 <form class="w-75 mb-5" method="POST" action="/login">
                     @csrf

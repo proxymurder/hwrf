@@ -2,13 +2,14 @@ import bootstrap from 'bootstrap';
 import '@/assets/scss/app.scss';
 
 import axios from 'axios';
-import { useOAuth } from '@/oauth.js';
+import { useAuth } from '@/auth.js';
 
-const { accessToken, isAuthenticated } = useOAuth();
+const { auth } = useAuth();
+
 axios.interceptors.request.use(
 	(config) => {
-		if (isAuthenticated.value) {
-			config.headers['Authorization'] = `Bearer ${accessToken.value}`;
+		if (auth.check) {
+			config.headers['Authorization'] = auth.header;
 		}
 		return config;
 	},
@@ -22,8 +23,31 @@ import App from '@/App.vue';
 import router from './router';
 
 const app = createApp(App);
+
 app.provide('axios', axios);
+app.provide('auth', auth);
+app.provide('env', {
+	routes: {
+		oauth: {
+			authorize: process.env.VUE_APP_OAUTH_URL + '/authorize',
+			token: process.env.VUE_APP_OAUTH_URL + '/token',
+		},
+		api: {
+			url: process.env.VUE_APP_API_URL,
+			redirect: process.env.VUE_APP_URL + '/callback',
+			location: process.env.VUE_APP_API_URL + '/location',
+			logout: process.env.VUE_APP_API_URL + '/logout',
+		},
+	},
+	clients: {
+		api: {
+			id: process.env.VUE_APP_OAUTH_CLIENT,
+		},
+	},
+});
+
 app.use(router);
+
 app.directive('scroll', {
 	mounted: function (el, binding) {
 		let f = function (e) {
@@ -34,4 +58,5 @@ app.directive('scroll', {
 		window.addEventListener('scroll', f);
 	},
 });
+
 app.mount('#app');

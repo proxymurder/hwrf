@@ -4,7 +4,7 @@
 	</div>
 </template>
 <script setup>
-import { inject } from 'vue';
+import { inject, onMounted } from 'vue';
 const props = defineProps({
 	msg: {
 		type: String,
@@ -12,9 +12,9 @@ const props = defineProps({
 	},
 });
 const axios = inject('axios');
-const oauth = JSON.parse(localStorage.getItem('oauth'));
+const { routes } = inject('env');
 axios
-	.get('https://api.reverse-proxy.local/tests/foo')
+	.get(`${routes.api.url}/tests/foo`)
 	.then((res) => {
 		console.log(res);
 	})

@@ -1,7 +1,10 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
+use Stevebauman\Location\Facades\Location;
+use App\Http\Controllers\OAuth\AuthController;
 use LaravelJsonApi\Laravel\Facades\JsonApiRoute;
 
 /*
@@ -23,12 +26,28 @@ JsonApiRoute::server('test')
     ->resources(function ($server) {
         Route::get('/foo', function (Request $request) {
             return response()->json([
-                'connection' => 'success!!!',
-                'another' => true,
-                'user_id' => optional(auth('api')->user())->id,
+                'user_id' => optional(auth()->guard('api')->user())->id,
             ]);
         });
     });
+
+Route::domain($url)
+    ->group(
+        function () {
+
+            Route::name('logout')
+                ->post('/logout', [
+                    AuthController::class,
+                    'logout'
+                ]);
+            Route::get('/location', function (Request $request) {
+                $ip = config('location.testing.enabled') ? config('location.testing.ip') : $request->ip();
+                $http = Http::get("https://ipapi.co/{$ip}/json/");
+
+                return $http->json();
+            });
+        }
+    );
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();

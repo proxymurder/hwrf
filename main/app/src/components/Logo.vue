@@ -24,8 +24,11 @@ const props = defineProps({
 const logo = ref();
 onMounted(() => {
 	const ns = 'http://www.w3.org/2000/svg';
-	const { svg, defs, gradient, colors, body, path } = reactive({
+	const { svg, mask, rect, path, defs, gradient, colors, body } = reactive({
 		svg: logo,
+		mask: document.createElementNS(ns, 'mask'),
+		rect: document.createElementNS(ns, 'rect'),
+		path: document.createElementNS(ns, 'path'),
 		defs: document.createElementNS(ns, 'defs'),
 		gradient: document.createElementNS(ns, 'linearGradient'),
 		colors: {
@@ -33,8 +36,21 @@ onMounted(() => {
 			end: document.createElementNS(ns, 'stop'),
 		},
 		body: document.createElementNS(ns, 'circle'),
-		path: document.createElementNS(ns, 'path'),
 	});
+
+	rect.setAttributeNS(null, 'width', '32');
+	rect.setAttributeNS(null, 'height', '32');
+	rect.setAttributeNS(null, 'fill', '#ffffff');
+
+	path.setAttributeNS(null, 'fill', 'none');
+	path.setAttributeNS(null, 'stroke', '#000000');
+	path.setAttributeNS(null, 'stroke-linecap', 'round');
+	path.setAttributeNS(null, 'stroke-width', '2');
+	path.setAttributeNS(null, 'd', 'M 6 19 C 8 30,24 30, 26 19');
+
+	mask.setAttributeNS(null, 'id', 'logo-mask');
+	mask.appendChild(rect);
+	mask.appendChild(path);
 
 	colors.start.setAttributeNS(null, 'offset', '0%');
 	colors.start.classList.add('start-color');
@@ -54,16 +70,14 @@ onMounted(() => {
 	defs.appendChild(gradient);
 
 	body.classList.add('logo-body');
+	body.setAttributeNS(null, 'mask', 'url(#logo-mask)');
 	body.setAttributeNS(null, 'cx', '16');
 	body.setAttributeNS(null, 'cy', '16');
 	body.setAttributeNS(null, 'r', '15');
 
-	path.classList.add('logo-path');
-	path.setAttributeNS(null, 'd', 'M 6 19 C 8 30,24 30, 26 19');
-
 	svg.appendChild(defs);
+	svg.appendChild(mask);
 	svg.appendChild(body);
-	svg.appendChild(path);
 });
 </script>
 
@@ -72,16 +86,6 @@ onMounted(() => {
 	fill: url('#logo-gradient');
 	@include color-scheme('light') {
 		fill: $gray-900;
-	}
-}
-
-.logo-path {
-	stroke-width: 2;
-	stroke-linecap: round;
-	fill: none;
-	stroke: $gray-900;
-	@include color-scheme('light') {
-		stroke: url('#logo-gradient');
 	}
 }
 
