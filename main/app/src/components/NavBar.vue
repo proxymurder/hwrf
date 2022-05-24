@@ -1,7 +1,7 @@
 <template>
 	<div
 		class="w-100 p-2 pb-1 gradient-fade position-fixed d-flex align-items-center z-10"
-		ref="nav"
+		ref="navBar"
 	>
 		<div class="w-20 d-flex align-content-center justify-content-around">
 			<Logo />
@@ -25,21 +25,21 @@ import { onMounted, reactive, ref, watchEffect } from 'vue';
 
 const emit = defineEmits(['height']);
 const props = defineProps({
-	background: {
+	nav: {
 		type: Object,
-		required: true,
+		required: false,
 	},
 });
-const nav = ref(null);
+const navBar = ref(null);
 
 onMounted(() => {
-	emit('height', nav.value.clientHeight);
+	emit('height', navBar.value.clientHeight);
 });
 
-const background = reactive(props.background);
+const nav = reactive(props.nav);
 watchEffect(() => {
-	if (nav.value) {
-		nav.value.style.backgroundColor = background.color;
+	if (navBar.value) {
+		navBar.value.style.backgroundColor = nav.background;
 	}
 });
 </script>

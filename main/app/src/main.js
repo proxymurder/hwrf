@@ -2,9 +2,7 @@ import bootstrap from 'bootstrap';
 import '@/assets/scss/app.scss';
 
 import axios from 'axios';
-import { useAuth } from '@/auth.js';
-
-const { auth } = useAuth();
+import { auth } from '@/auth.js';
 
 axios.interceptors.request.use(
 	(config) => {
@@ -25,7 +23,7 @@ import router from './router';
 const app = createApp(App);
 
 app.provide('axios', axios);
-app.provide('auth', auth);
+// app.provide('auth', auth);
 app.provide('env', {
 	routes: {
 		oauth: {

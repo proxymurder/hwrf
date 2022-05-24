@@ -3,10 +3,10 @@
 </template>
 
 <script setup>
+import { computed, inject } from 'vue';
+import { auth } from '@/auth.js';
 import crypto from 'crypto-js';
-import { computed, inject, reactive } from 'vue';
 
-const auth = inject('auth');
 const { routes, clients } = inject('env');
 
 const display = computed(() => {

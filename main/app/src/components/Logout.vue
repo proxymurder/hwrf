@@ -4,8 +4,9 @@
 
 <script setup>
 import { inject } from 'vue';
+import { auth } from '@/auth.js';
+
 const axios = inject('axios');
-const auth = inject('auth');
 const { routes } = inject('env');
 
 function redirect() {

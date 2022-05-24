@@ -1,7 +1,8 @@
 <template>
 	<div
-		class="min-vh-100 d-flex col align-items-center justify-content-center border-box"
+		class="min-vh-100 d-flex flex-column align-items-center justify-content-center"
 	>
+		<Loading />
 		<h4>Authorizing...</h4>
 	</div>
 </template>
@@ -9,11 +10,12 @@
 <script setup>
 import { computed, inject, onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { auth } from '@/auth.js';
+import Loading from '@/components/Loading.vue';
 
 const router = useRouter();
 
 const axios = inject('axios');
-const auth = inject('auth');
 const { routes, clients } = inject('env');
 
 const query = new URLSearchParams(window.location.search);
@@ -24,27 +26,27 @@ const matches = computed(() => {
 });
 
 onMounted(() => {
-	if (!matches.value || !code) {
-		router.push('/');
-	}
-	axios
-		.post(routes.oauth.token, {
-			grant_type: 'authorization_code',
-			client_id: clients.api.id,
-			redirect_uri: routes.api.redirect,
-			code: code,
-			code_verifier: auth.verifier,
-		})
-		.then((res) => {
-			console.log(res);
-			auth.state = null;
-			auth.verifier = null;
-			auth.jwt = res.data;
-			router.replace('/');
-		})
-		.catch((err) => {
-			console.log('err: ', err);
-		});
+	// if (!matches.value || !code) {
+	// 	router.push('/');
+	// }
+	// axios
+	// 	.post(routes.oauth.token, {
+	// 		grant_type: 'authorization_code',
+	// 		client_id: clients.api.id,
+	// 		redirect_uri: routes.api.redirect,
+	// 		code: code,
+	// 		code_verifier: auth.verifier,
+	// 	})
+	// 	.then((res) => {
+	// 		console.log(res);
+	// 		auth.state = null;
+	// 		auth.verifier = null;
+	// 		auth.jwt = res.data;
+	// 		router.replace('/');
+	// 	})
+	// 	.catch((err) => {
+	// 		console.log('err: ', err);
+	// 	});
 });
 </script>
 

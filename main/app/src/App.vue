@@ -1,43 +1,30 @@
 <template>
 	<div>
-		<NavBar :background="nav.background" @height="setHeight" />
-		<main class="w-100 p-2 pt-1 position-absolute" v-scroll="scroll" ref="main">
+		<NavBar :nav="nav" @height="setHeight" />
+		<Container :container="container" @background="setBackground">
 			<router-view />
-		</main>
+		</Container>
 	</div>
 </template>
 <script setup>
 import { computed, inject, onMounted, reactive, ref, watchEffect } from 'vue';
-import NavBar from '@/components/NavBar.vue';
 import axios from 'axios';
+import NavBar from '@/components/NavBar.vue';
+import Container from '@/components/Container.vue';
 
 const { routes } = inject('env');
-const nav = reactive({
-	background: reactive({
-		isSet: ref(false),
-		color: ref(null),
-	}),
+
+const container = reactive({
 	height: ref(null),
 });
-const main = ref(null);
-function setHeight(v) {
-	main.value.style.top = `${v}px`;
+const nav = reactive({
+	background: ref(null),
+});
+function setHeight(value) {
+	container.height = `${value}px`;
 }
-
-function scroll(e, el) {
-	const { background } = nav;
-	const y = window.scrollY;
-	const thresh = 30;
-	const set = computed(() => y >= thresh && !background.isSet);
-	const unset = computed(() => y < thresh && background.isSet);
-	if (set.value) {
-		background.isSet = true;
-		background.color = '#181818';
-	}
-	if (unset.value) {
-		background.isSet = false;
-		background.color = 'unset';
-	}
+function setBackground(value) {
+	nav.background = value;
 }
 
 onMounted(() => {
