@@ -1,13 +1,12 @@
 <template>
-	<!-- <div
+	<div
 		class="min-vh-100 d-flex flex-column align-items-center justify-content-center bg-white-100 rounded"
 	>
 		<HelloWorld :msg="msg" />
 		<button class="btn btn-primary text-white" @click="change">
 			Change message
 		</button>
-	</div> -->
-	<Loading />
+	</div>
 </template>
 
 <script setup>
