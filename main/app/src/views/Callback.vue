@@ -15,8 +15,6 @@ import Loading from '@/components/Loading.vue';
 
 const router = useRouter();
 
-var me = { opiod: 'hello' };
-
 const axios = inject('axios');
 const { routes, clients } = inject('env');
 
