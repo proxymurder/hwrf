@@ -2,7 +2,10 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
@@ -11,7 +14,8 @@
         "laravel/framework": "^9.2",
         "laravel/passport": "^10.4",
         "laravel/tinker": "^2.7",
-        "stevebauman/location": "^6.5"
+        "stevebauman/location": "^6.5",
+        "winc-oops/passport-pkce": "@dev"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -21,6 +25,12 @@
         "phpunit/phpunit": "^9.5.10",
         "spatie/laravel-ignition": "^1.0"
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "/root/Code/Composer/winc-oops/passport-pkce"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "App\\": "app/",

@@ -27,6 +27,7 @@ services:
       context: ./api/src
     volumes:
       - ./api/src:/var/www/html
+      - ~/Code/Composer:/Packages
     ports:
       - 9000
     depends_on:
