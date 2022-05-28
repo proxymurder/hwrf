@@ -12,10 +12,9 @@
         "guzzlehttp/guzzle": "^7.2",
         "laravel-json-api/laravel": "^2.3",
         "laravel/framework": "^9.2",
-        "laravel/passport": "^10.4",
         "laravel/tinker": "^2.7",
         "stevebauman/location": "^6.5",
-        "winc-oops/passport-pkce": "@dev"
+        "winc-oops/passport-pkce": "dev-main"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -28,7 +27,7 @@
     "repositories": [
         {
             "type": "path",
-            "url": "/root/Code/Composer/winc-oops/passport-pkce"
+            "url": "/Packages/winc-oops/passport-pkce"
         }
     ],
     "autoload": {

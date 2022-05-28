@@ -11,7 +11,7 @@ class AuthServiceProvider extends ServiceProvider
     /**
      * The policy mappings for the application.
      *
-     * @var array<class-string, class-string>
+     * @var array<class-string,class-string>
      */
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
@@ -25,18 +25,6 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
-        Passport::routes(
-            function ($router) {
-                $router->forAuthorization();
-                $router->forAccessTokens();
-                $router->forTransientTokens();
-            },
-            [
-                'domain' => 'oauth.' . config('app.url'),
-                'prefix' => '',
-            ]
-        );
 
         Passport::tokensCan([]);
     }
