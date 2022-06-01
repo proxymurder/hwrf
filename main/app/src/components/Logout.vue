@@ -11,7 +11,7 @@ const { routes } = inject('env');
 
 function redirect() {
 	axios
-		.post(routes.api.logout)
+		.post(routes.oauth.logout)
 		.then((res) => {
 			console.log(res);
 			auth.jwt = null;

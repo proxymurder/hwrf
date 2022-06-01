@@ -1,6 +1,15 @@
 // Fonts
 @import url("https://fonts.googleapis.com/css?family=Nunito");
 
+@font-face {
+    font-family: "GUBBLABLO";
+    src: url("/storage/fonts/GUBBLABLO.ttf") format("truetype");
+}
+
+.winc-oops {
+    font-family: "GUBBLABLO", sans-serif;
+}
+
 // Variables
 @import "variables";
 

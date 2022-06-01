@@ -7048,7 +7048,7 @@
             "dist": {
                 "type": "path",
                 "url": "/Packages/winc-oops/passport-pkce",
-                "reference": "64405049120f6524dc5f9e63a98b34dea31244b5"
+                "reference": "2868dce33581fbdfff33c330908455385ed048ad"
             },
             "require": {
                 "laravel/passport": "^10.4"
@@ -7061,8 +7061,8 @@
                 "laravel": {
                     "providers": [
                         "WincOops\\PassportPkce\\Providers\\PassportPkceServiceProvider",
-                        "WincOops\\PassportPkce\\Providers\\RouteServiceProvider",
-                        "WincOops\\PassportPkce\\Providers\\AuthServiceProvider"
+                        "WincOops\\PassportPkce\\Providers\\AuthServiceProvider",
+                        "WincOops\\PassportPkce\\Providers\\RouteServiceProvider"
                     ],
                     "aliases": {
                         "PassportPkce": "WincOops\\PassportPkce\\Facades\\PassportPkce"

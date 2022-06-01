@@ -1,10 +1,7 @@
 <template>
-	<div
-		class="callback d-flex flex-column align-items-center justify-content-center"
-	>
+	<div class="callback d-flex flex-column align-items-center justify-content-center">
 		<Loading class="mb-2" />
 	</div>
-	<div>{{ matches }}</div>
 </template>
 
 <script setup>
@@ -29,6 +26,9 @@ const matches = computed(() => {
 
 onMounted(() => {
 	if (!matches.value || !code) {
+		auth.state = null;
+		auth.verifier = null;
+		auth.jwt = null;
 		router.push('/');
 	}
 	axios

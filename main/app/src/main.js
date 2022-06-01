@@ -27,14 +27,14 @@ app.provide('axios', axios);
 app.provide('env', {
 	routes: {
 		oauth: {
-			authorize: process.env.VUE_APP_OAUTH_URL + '/authorize',
-			token: process.env.VUE_APP_OAUTH_URL + '/token',
+			authorize: process.env.VUE_APP_OAUTH_URL + '/oauth/authorize',
+			token: process.env.VUE_APP_OAUTH_URL + '/oauth/token',
+			logout: process.env.VUE_APP_OAUTH_URL + '/oauth/api/logout',
 		},
 		api: {
 			url: process.env.VUE_APP_API_URL,
 			redirect: process.env.VUE_APP_URL + '/callback',
 			location: process.env.VUE_APP_API_URL + '/location',
-			logout: process.env.VUE_APP_API_URL + '/logout',
 		},
 	},
 	clients: {
