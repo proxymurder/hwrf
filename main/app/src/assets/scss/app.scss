@@ -1,15 +1,56 @@
+// Bootstrap
+// @import 'bootstrap/scss/bootstrap';
+
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
 
-// utilities
-@import 'utilities';
+@font-face {
+	font-family: 'Gubblebum Blocky';
+	src: url('../fonts/gubblebum/GUBBLO___.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'Gubblebum Black and Blocky';
+	src: url('../fonts/gubblebum/GUBBLABLO.ttf') format('truetype');
+}
 
-// Variables
+// Default functions
+@import 'bootstrap/scss/functions';
+
+// Variable overrides
 @import 'variables';
 
-// Bootstrap
-@import 'bootstrap/scss/bootstrap';
+// 3. Required Bootstrap stylesheets
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/root';
+
+// Custom utilities
+@import 'utilities';
+
+// Optional bootstrap
+@import 'bootstrap/scss/buttons';
+@import 'bootstrap/scss/containers';
+@import 'bootstrap/scss/grid';
+@import 'bootstrap/scss/images';
+@import 'bootstrap/scss/nav';
+@import 'bootstrap/scss/reboot';
+@import 'bootstrap/scss/type';
+
+//Bootstrap helpers
+@import 'bootstrap/scss/helpers';
+
+// Bootstrap utilities api
+@import 'bootstrap/scss/utilities/api';
 
 a {
 	text-decoration: none;
+}
+
+.logo-font {
+	font-family: 'Gubblebum Blocky', sans-serif;
+	// font-family: 'Gubblebum Black and Blocky', sans-serif;
+	// font-family: 'Press Start 2P', cursive;
+	// font-size: 1.5rem;
 }

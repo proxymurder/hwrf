@@ -19,7 +19,7 @@ const routes = [
 		// component: () => import(/* webpackChunkName: "about" */ '@/views/About.vue')
 	},
 	{
-		path: '/callback',
+		path: '/auth/callback',
 		name: 'callback',
 		component: Callback,
 	},

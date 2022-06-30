@@ -10,8 +10,9 @@ const axios = inject('axios');
 const { routes } = inject('env');
 
 function redirect() {
+	console.log('logout', routes.accounts.logout);
 	axios
-		.post(routes.oauth.logout)
+		.post(routes.accounts.logout)
 		.then((res) => {
 			console.log(res);
 			auth.jwt = null;

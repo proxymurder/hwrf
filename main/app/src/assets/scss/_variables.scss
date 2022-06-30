@@ -1,4 +1,4 @@
-// Colors
+// Whites
 $white-00: #ffffff00;
 $white-100: #ffffff1a;
 $white-200: #ffffff33;
@@ -25,6 +25,7 @@ $whites: (
 	'white': $white,
 );
 
+// Blacks
 $black-00: #00000000;
 $black-100: #0000001a;
 $black-200: #00000033;
@@ -51,6 +52,18 @@ $blacks: (
 	'black': $black,
 );
 
+// Colors
+$blue: #3490dc;
+$indigo: #6574cd;
+$purple: #9561e2;
+$pink: #f66d9b;
+$red: #e3342f;
+$orange: #f6993f;
+$yellow: #ffed4a;
+$green: #38c172;
+$teal: #4dc0b5;
+$cyan: #6cb2eb;
+
 $colors: (
 	'blue': $blue,
 	'indigo': $indigo,
@@ -59,9 +72,9 @@ $colors: (
 	'red': $red,
 	'orange': $orange,
 	'yellow': $yellow,
-	'green': $green-500,
+	'green': $green,
 	'teal': $teal,
-	'cyan': $cyan-200,
+	'cyan': $cyan,
 	'white': $white,
 	'gray': $gray-600,
 	'gray-dark': $gray-900,
@@ -104,6 +117,7 @@ $spacers: (
 	9: $spacer * 4,
 	10: $spacer * 4.5,
 );
+
 // Ranges
 $range-1: (
 	0: 0,
@@ -157,10 +171,14 @@ $font-size-base: 0.8rem;
 $line-height-base: 1.6;
 
 :root {
-	@each $color, $value in $whites {
-		--#{$variable-prefix}#{$color}: #{$value};
+	@media (prefers-color-scheme: dark) {
+		@each $color, $value in $blacks {
+			--#{$variable-prefix}#{$color}: #{$value};
+		}
 	}
-	@each $color, $value in $blacks {
-		--#{$variable-prefix}#{$color}: #{$value};
+	@media (prefers-color-scheme: light) {
+		@each $color, $value in $whites {
+			--#{$variable-prefix}#{$color}: #{$value};
+		}
 	}
 }

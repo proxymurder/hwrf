@@ -23,19 +23,18 @@ import router from './router';
 const app = createApp(App);
 
 app.provide('axios', axios);
-// app.provide('auth', auth);
 app.provide('env', {
 	routes: {
-		oauth: {
+		accounts: {
 			authorize: process.env.VUE_APP_OAUTH_URL + '/oauth/authorize',
 			token: process.env.VUE_APP_OAUTH_URL + '/oauth/token',
-			logout: process.env.VUE_APP_OAUTH_URL + '/oauth/api/logout',
+			logout: process.env.VUE_APP_OAUTH_URL + '/api/logout',
 		},
 		api: {
 			url: process.env.VUE_APP_API_URL,
-			redirect: process.env.VUE_APP_URL + '/callback',
 			location: process.env.VUE_APP_API_URL + '/location',
 		},
+		redirect: process.env.VUE_APP_URL + '/auth/callback',
 	},
 	clients: {
 		api: {

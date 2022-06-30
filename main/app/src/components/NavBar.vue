@@ -1,10 +1,7 @@
 <template>
-	<div
-		class="w-100 p-2 pb-1 gradient-fade position-fixed d-flex align-items-center z-10"
-		ref="navBar"
-	>
+	<div class="w-100 p-2 pb-1 gradient-fade position-fixed d-flex align-items-center z-10" ref="navBar">
 		<div class="w-20 d-flex align-content-center justify-content-around">
-			<Logo />
+			<span class="logo-font display-6">E-stubb</span>
 		</div>
 		<nav class="w-60 nav d-flex align-content-center">
 			<router-link class="nav-link me-3 rounded" to="/">Home</router-link>
@@ -82,11 +79,7 @@ div > .nav-link:hover {
 @keyframes gradient-animation {
 	@each $key, $value in $range-100 {
 		#{$value} {
-			background-image: linear-gradient(
-				#{(125 + 4 * ($key)/10) + 'deg'},
-				$pink-200,
-				$teal-200
-			);
+			background-image: linear-gradient(#{(125 + 4 * ($key)/10) + 'deg'}, $pink-200, $teal-200);
 		}
 	}
 }

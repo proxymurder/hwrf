@@ -9,9 +9,10 @@
     </ul>
 </div>
 @endif
-<main class="container vh-100 d-flex col col-xxl-3 col-md-5 col-sm-8 align-items-center justify-content-center">
-    <div class="card w-100 min-h-50 mx-auto p-2">
-        <div class="card-body d-flex flex-column align-items-center justify-content-center">
+<main
+    class="container vh-100 d-flex col-xxl-3 col-xl-4 col-md-5 col-sm-8 col align-items-center justify-content-center">
+    <div class="w-100 min-h-50 mx-auto p-2">
+        <div class="d-flex flex-column align-items-center justify-content-center">
             <div class="w-50 d-flex flex-column align-items-center justify-content-center">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="50%" height="50%">
                     <defs>

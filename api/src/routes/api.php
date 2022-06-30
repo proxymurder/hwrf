@@ -32,7 +32,7 @@ Route::domain($url)
 
             Route::get('/test', function (Request $request) {
                 return response()->json([
-                    'status' => 200,
+                    'success' => true,
                 ]);
             });
         }

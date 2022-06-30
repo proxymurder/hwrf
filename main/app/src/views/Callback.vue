@@ -32,10 +32,10 @@ onMounted(() => {
 		router.push('/');
 	}
 	axios
-		.post(routes.oauth.token, {
+		.post(routes.accounts.token, {
 			grant_type: 'authorization_code',
 			client_id: clients.api.id,
-			redirect_uri: routes.api.redirect,
+			redirect_uri: routes.redirect,
 			code: code,
 			code_verifier: auth.verifier,
 		})

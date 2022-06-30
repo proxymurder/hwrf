@@ -19,9 +19,7 @@ export const auth = reactive({
 		return JSON.parse(localStorage.getItem('verifier'));
 	},
 	header: computed(() => {
-		return auth.check
-			? `${auth.jwt.token_type} ${auth.jwt.access_token}`
-			: null;
+		return auth.check ? `${auth.jwt.token_type} ${auth.jwt.access_token}` : null;
 	}),
 	check: computed(() => {
 		return !!auth.jwt;

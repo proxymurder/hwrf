@@ -19,17 +19,7 @@ function redirect(e) {
 		auth.state = strgen(40);
 		auth.verifier = strgen(128);
 		const challenge = encode(auth.verifier);
-
-		const url =
-			`${routes.oauth.authorize}?` +
-			`client_id=${clients.api.id}&` +
-			`redirect_uri=${routes.api.redirect}&` +
-			`response_type=code&` +
-			`scope=&` +
-			`state=${auth.state}&` +
-			`code_challenge=${challenge}&` +
-			`code_challenge_method=S256`;
-
+		const url = `${routes.accounts.authorize}?` + `client_id=${clients.api.id}&` + `redirect_uri=${routes.redirect}&` + `response_type=code&` + `scope=&` + `state=${auth.state}&` + `code_challenge=${challenge}&` + `code_challenge_method=S256`;
 		window.location = url;
 	} else {
 		console.log('Authenticated');
@@ -47,12 +37,7 @@ function strgen(l = 128) {
 }
 
 function encode(str) {
-	return crypto
-		.SHA256(str)
-		.toString(crypto.enc.Base64)
-		.replace(/\+/g, '-')
-		.replace(/\//g, '_')
-		.replace(/=/g, '');
+	return crypto.SHA256(str).toString(crypto.enc.Base64).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 }
 </script>
 

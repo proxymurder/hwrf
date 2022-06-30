@@ -14,7 +14,7 @@
         "laravel/framework": "^9.2",
         "laravel/tinker": "^2.7",
         "stevebauman/location": "^6.5",
-        "winc-oops/passport-pkce": "dev-main"
+        "winc-oops/laravel-passport-pkce": "dev-main"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -26,8 +26,8 @@
     },
     "repositories": [
         {
-            "type": "path",
-            "url": "/Packages/winc-oops/passport-pkce"
+            "type": "vcs",
+            "url": "https://github.com/winc-oops/larvel-passport-pkce.git"
         }
     ],
     "autoload": {

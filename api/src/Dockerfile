@@ -14,10 +14,14 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd zip
 
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
+RUN apt-get install -y \
+    nodejs \
+    npm 
+
 RUN echo '#!/bin/bash\nphp artisan "$@"' > /usr/local/bin/artisan \
     && chmod +x /usr/local/bin/artisan
-
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 ENV PATH=${PATH}:vendor/bin
    
