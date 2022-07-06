@@ -1,0 +1,2 @@
+# {min, hour, day, month, weekday}	command
+*	*	*/15	*	*	step ca renew --force /home/step/site.crt /home/step/site.key && cp /home/step/site.crt /var/local/step/site.crt

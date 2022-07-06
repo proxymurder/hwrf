@@ -1,13 +1,20 @@
 networks:
-    local_network:
+    api-network:
         driver: bridge
-    api_network:
+    local-network:
         driver: bridge
-    main_network:
+    main-network:
+        driver: bridge
+    step-network:
         driver: bridge
 volumes:
+    step:
+        driver: local
     mysql:
         driver: local
+secrets:
+    password:
+        file: ./step/ca/secrets/password
 services:
     db:
         image: mysql:latest
@@ -20,7 +27,7 @@ services:
         ports:
             - 3306
         networks:
-            - api_network
+            - api-network
     php:
         build:
             context: ./api/src
@@ -31,9 +38,19 @@ services:
         depends_on:
             - db
         networks:
-            - api_network
-    api_www:
-        image: nginx:latest
+            - api-network
+    api:
+        image: node:alpine
+        user: node
+        volumes:
+            - ./api/src:/var/www/html
+        working_dir: /var/www/html
+        entrypoint: ['npm']
+        command: ['run', 'watch']
+        networks:
+            - api-network
+    api-www:
+        image: nginx:alpine
         volumes:
             - ./api/src:/var/www/html
             - ./api/nginx/conf.d:/etc/nginx/conf.d
@@ -44,28 +61,19 @@ services:
             - db
             - php
         networks:
-            - local_network
-            - api_network
-    npm:
-        image: node:alpine
-        user: node
-        volumes:
-            - ./api/src:/var/www/html
-        working_dir: /var/www/html
-        entrypoint: ['npm']
-        command: ['run', 'watch']
-        networks:
-            - api_network
+            - local-network
+            - api-network
     main:
         image: node:alpine
         working_dir: /usr/share/nginx/html
         volumes:
             - ./main/app:/usr/share/nginx/html
-        command: ['npm', 'run', 'watch']
+        entrypoint: ['npm']
+        command: ['run', 'watch']
         networks:
-            - main_network
-    main_www:
-        image: nginx:latest
+            - main-network
+    main-www:
+        image: nginx:alpine
         volumes:
             - ./main/app:/usr/share/nginx/html
             - ./main/nginx/conf.d:/etc/nginx/conf.d
@@ -74,24 +82,51 @@ services:
         depends_on:
             - db
             - php
-            - api_www
+            - api-www
         networks:
-            - local_network
-            - main_network
+            - local-network
+            - main-network
     www:
-        image: nginx:latest
+        build:
+            context: ./proxy
         volumes:
-            - ./proxy/ssl/certs:/etc/ssl/certs/nginx
+            - step:/home/step:ro
             - ./proxy/nginx/conf.d:/etc/nginx/conf.d
-            - ./proxy/nginx/proxy.conf:/etc/nginx/proxy.conf
-            - ./proxy/nginx/ssl.conf:/etc/nginx/ssl.conf
+            - ./proxy/nginx/config:/etc/nginx/config
         depends_on:
-            - db
-            - php
-            - api_www
-            - main_www
+            - api-www
+            - main-www
+            - step-certs
         networks:
-            - local_network
+            - local-network
         ports:
             - 80:80
             - 443:443
+    step-ca:
+        image: smallstep/step-ca
+        volumes:
+            - ./step/ca:/home/step
+        ports:
+            - 443
+        networks:
+            - step-network
+    step-certs:
+        build:
+            context: ./step/certs
+        volumes:
+            - step:/home/step
+            - ./step/certs/tmp:/var/local/step
+        secrets:
+            - password
+        environment:
+            STEPPATH: /home/step
+            STEP_CA_URL: https://step-ca
+            STEP_FINGERPRINT: 473fd13142b2bf3edb96f533052b8ec013af91d74403e5d89ef2d99385e44154
+            STEP_ROOT: /home/step/root_ca.crt
+            STEP_KID: mbpaw9iGNw81raKt7Ph06Kk2aShmSi0RKuxSeQItNEw
+            STEP_PASSWORD_FILE: /run/secrets/password
+            STEP_NAME: e-stubb.local
+        depends_on:
+            - step-ca
+        networks:
+            - step-network

@@ -1,25 +1,35 @@
-FROM php:fpm
+FROM php:fpm-alpine
 
-
-RUN docker-php-ext-install pdo pdo_mysql sockets
-
-RUN apt-get update && apt-get install -y \
+# install dependencies
+RUN apk add --no-cache --virtual \
+	# gd
+    freetype-dev \
     git \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
+    gifsicle \
+    libjpeg-turbo-dev \
     libpng-dev \
-    zlib1g-dev \
+    libwebp-dev \
     libzip-dev \
+    jpegoptim \
+    optipng \
+    pngquant \
+    # pdo \
+    # pdo_mysql \
     unzip \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd zip
+    zlib-dev \
+	&& docker-php-ext-configure gd \
+	&& docker-php-ext-install -j$(nproc) gd \
+	# pdo_mysql
+	&& docker-php-ext-install pdo_mysql\
+	# pdo
+	&& docker-php-ext-install pdo \
+	# zip
+	&& docker-php-ext-install zip
 
+# install composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-RUN apt-get install -y \
-    nodejs \
-    npm 
-
+# install artisan
 RUN echo '#!/bin/bash\nphp artisan "$@"' > /usr/local/bin/artisan \
     && chmod +x /usr/local/bin/artisan
 
