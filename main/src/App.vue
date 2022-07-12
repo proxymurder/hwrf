@@ -7,7 +7,7 @@
 	</div>
 </template>
 <script setup>
-import { computed, inject, onMounted, reactive, ref, watchEffect } from 'vue';
+import { inject, onMounted, reactive, ref } from 'vue';
 import axios from 'axios';
 import NavBar from '@/components/NavBar.vue';
 import Container from '@/components/Container.vue';
@@ -41,6 +41,6 @@ onMounted(() => {
 <style lang="scss">
 body {
 	margin: 0;
-	color: $gray-200;
+	// color: $gray-200;
 }
 </style>
