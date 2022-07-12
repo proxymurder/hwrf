@@ -1,107 +1,27 @@
 networks:
     api-network:
+        name: e-stubb/api-network
         driver: bridge
     local-network:
+        name: e-stubb/local-network
         driver: bridge
     main-network:
+        name: e-stubb/main-network
         driver: bridge
     step-network:
+        name: e-stubb/step-network
         driver: bridge
 volumes:
     step:
+        name: e-stubb-step-volume
         driver: local
     mysql:
+        name: e-stubb-mysql-volume
         driver: local
 secrets:
     password:
         file: ./step/ca/secrets/password
 services:
-    db:
-        image: mysql:latest
-        volumes:
-            - mysql:/var/lib/mysql
-        environment:
-            MYSQL_ROOT_PASSWORD: secret
-            MYSQL_ROOT_HOST: '%'
-            MYSQL_DATABASE: reverse_proxy
-        ports:
-            - 3306
-        networks:
-            - api-network
-    php:
-        build:
-            context: ./api/src
-        volumes:
-            - ./api/src:/var/www/html
-        ports:
-            - 9000
-        depends_on:
-            - db
-        networks:
-            - api-network
-    api:
-        image: node:alpine
-        user: node
-        volumes:
-            - ./api/src:/var/www/html
-        working_dir: /var/www/html
-        entrypoint: ['npm']
-        command: ['run', 'watch']
-        networks:
-            - api-network
-    api-www:
-        image: nginx:alpine
-        volumes:
-            - ./api/src:/var/www/html
-            - ./api/nginx/conf.d:/etc/nginx/conf.d
-            - ./api/nginx/proxy.conf:/etc/nginx/proxy.conf
-        ports:
-            - 80
-        depends_on:
-            - db
-            - php
-        networks:
-            - local-network
-            - api-network
-    main:
-        image: node:alpine
-        working_dir: /usr/share/nginx/html
-        volumes:
-            - ./main/app:/usr/share/nginx/html
-        entrypoint: ['npm']
-        command: ['run', 'watch']
-        networks:
-            - main-network
-    main-www:
-        image: nginx:alpine
-        volumes:
-            - ./main/app:/usr/share/nginx/html
-            - ./main/nginx/conf.d:/etc/nginx/conf.d
-        ports:
-            - 80
-        depends_on:
-            - db
-            - php
-            - api-www
-        networks:
-            - local-network
-            - main-network
-    www:
-        build:
-            context: ./proxy
-        volumes:
-            - step:/home/step:ro
-            - ./proxy/nginx/conf.d:/etc/nginx/conf.d
-            - ./proxy/nginx/config:/etc/nginx/config
-        depends_on:
-            - api-www
-            - main-www
-            - step-certs
-        networks:
-            - local-network
-        ports:
-            - 80:80
-            - 443:443
     step-ca:
         image: smallstep/step-ca
         volumes:
@@ -113,6 +33,7 @@ services:
     step-certs:
         build:
             context: ./step/certs
+        image: e-stubb/step-cli
         volumes:
             - step:/home/step
             - ./step/certs/tmp:/var/local/step
@@ -120,13 +41,109 @@ services:
             - password
         environment:
             STEPPATH: /home/step
+            STEP_ALT_NAME: e-stubb.local
             STEP_CA_URL: https://step-ca
-            STEP_FINGERPRINT: 473fd13142b2bf3edb96f533052b8ec013af91d74403e5d89ef2d99385e44154
+            STEP_FINGERPRINT: d2d42a0a3cd01227ad1fb03082f29762107ae01452b6c6d86548b42e94565145
+            STEP_KID: p8dGsRgMtHu4SF5tBcF1dmUhG7KdVEFbmd4Q_e_oEzs
             STEP_ROOT: /home/step/root_ca.crt
-            STEP_KID: mbpaw9iGNw81raKt7Ph06Kk2aShmSi0RKuxSeQItNEw
             STEP_PASSWORD_FILE: /run/secrets/password
-            STEP_NAME: e-stubb.local
         depends_on:
             - step-ca
         networks:
             - step-network
+    db:
+        image: mysql:latest
+        volumes:
+            - mysql:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: secret
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_DATABASE: e-stubb
+            MYSQL_USER: root
+            MYSQL_PASSWORD: secret
+        ports:
+            - 3306
+        networks:
+            - api-network
+    php:
+        build:
+            context: ./api
+        image: e-stubb/php
+        volumes:
+            - ./api:/var/www/html
+        ports:
+            - 9000
+        depends_on:
+            - db
+        networks:
+            - api-network
+    api:
+        image: node:alpine
+        user: node
+        volumes:
+            - ./api:/var/www/html
+        working_dir: /var/www/html
+        entrypoint: ['npm']
+        command: ['run', 'watch']
+        networks:
+            - api-network
+    main:
+        image: node:alpine
+        user: node
+        volumes:
+            - ./main:/usr/share/nginx/html
+        working_dir: /usr/share/nginx/html
+        entrypoint: ['npm']
+        command: ['run', 'watch']
+        networks:
+            - main-network
+    www-api:
+        build:
+            context: ./www
+        image: e-stubb/nginx
+        volumes:
+            - step:/home/step:ro
+            - ./api:/var/www/html
+            - ./www/nginx/api:/etc/nginx/conf.d
+            - ./www/nginx/ssl.conf:/etc/nginx/ssl.conf
+        ports:
+            - 80
+        depends_on:
+            - db
+            - php
+            - step-certs
+        networks:
+            - local-network
+            - api-network
+    www-main:
+        build:
+            context: ./www
+        image: e-stubb/nginx
+        volumes:
+            - step:/home/step:ro
+            - ./main:/usr/share/nginx/html
+            - ./www/nginx/main:/etc/nginx/conf.d
+            - ./www/nginx/ssl.conf:/etc/nginx/ssl.conf
+        ports:
+            - 80
+        depends_on:
+            - www-api
+        networks:
+            - local-network
+            - main-network
+    www:
+        build:
+            context: ./www
+        image: e-stubb/nginx
+        volumes:
+            - step:/home/step:ro
+            - ./www/nginx/proxy:/etc/nginx/conf.d
+            - ./www/nginx/proxy.conf:/etc/nginx/proxy.conf
+            - ./www/nginx/ssl.conf:/etc/nginx/ssl.conf
+        depends_on:
+            - www-main
+        networks:
+            - local-network
+        ports:
+            - 80:80
+            - 443:443

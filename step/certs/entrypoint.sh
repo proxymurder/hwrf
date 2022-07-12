@@ -12,9 +12,9 @@ rm -f /var/local/step/site.crt
 step ca root /home/step/root_ca.crt
 
 # Get token
-STEP_TOKEN=$(step ca token $STEP_NAME --san=${STEP_NAME} --san=*.${STEP_NAME})
+STEP_TOKEN=$(step ca token $STEP_ALT_NAME --san=localhost --san=${STEP_ALT_NAME} --san=*.${STEP_ALT_NAME})
 # Donwload the root certificate
-step ca certificate --token $STEP_TOKEN $STEP_NAME /home/step/site.crt /home/step/site.key
+step ca certificate --token $STEP_TOKEN $STEP_ALT_NAME /home/step/site.crt /home/step/site.key
 
 cp /home/step/site.crt /var/local/step/site.crt
 

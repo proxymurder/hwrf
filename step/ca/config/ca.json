@@ -5,7 +5,7 @@
 	"key": "/home/step/secrets/intermediate_ca_key",
 	"address": ":443",
 	"insecureAddress": "",
-	"dnsNames": ["step-ca"],
+	"dnsNames": ["step-ca", "ca.e-stubb.local"],
 	"logger": {
 		"format": "text"
 	},
@@ -18,23 +18,24 @@
 		"provisioners": [
 			{
 				"type": "JWK",
-				"name": "admin",
+				"name": "admin@e-stubb.local",
 				"key": {
 					"use": "sig",
 					"kty": "EC",
-					"kid": "mbpaw9iGNw81raKt7Ph06Kk2aShmSi0RKuxSeQItNEw",
+					"kid": "p8dGsRgMtHu4SF5tBcF1dmUhG7KdVEFbmd4Q_e_oEzs",
 					"crv": "P-256",
 					"alg": "ES256",
-					"x": "TzOXhSUgFhnPPeirY9YUNelhs0Uy3mWGi3ONPXcly84",
-					"y": "oAT5HLG_dKRv6iJA7ZhBraFW710pfZ-c39fwsOzKDGg"
+					"x": "MBT82svDOoYJSdBt5SYdSYXM4j8vRaf_vx5WBrrJ3Rg",
+					"y": "pMFdJHThMASfTK44aSIk242Sd7T526tEqAVplRSJAz0"
 				},
-				"encryptedKey": "eyJhbGciOiJQQkVTMi1IUzI1NitBMTI4S1ciLCJjdHkiOiJqd2sranNvbiIsImVuYyI6IkEyNTZHQ00iLCJwMmMiOjEwMDAwMCwicDJzIjoiUTg3WXVlcjR5bkFCQUMyeS0yczN1dyJ9.j2L27O4QdZSJTFmsrIxdvPE7aaB79P-c9FXvtSb8a2kbzqXLAU4L0A.MszBq9hHy1BWfyZy.Z9oE4GYMhXLwOABtzIpjVzNobzM-wrK4fXlqEw2Z-L5f93tPoA7xMEbKQFMoD8Hirb8ynSQv2jc_Hwfl5ohNdoO563qtP5i1ArTuh6l8zNzYiXFMVZ2lUUJAGnnHQq-h1WmJv7pwX4KrzrO5LTcH6s_8C2_oN_76-TlcSbAJ79F2ENIF--xZdmjWbjC79S0dh-Z1BEZNjDVjPhduURghRzu_PM1DY7mlD_7-p2vb5v45QVlSI_czh1LFijsVmarUpfSpjJ35f9biMmSzh-e7j3qzA2_-7Z9JPWkqNFt_cNijKsP2EaOmdK0gSYtpgetRVBXElnmVsU-cfU3yGM8.SJmGcKsQEXBwcZFHWYwzbA"
+				"encryptedKey": "eyJhbGciOiJQQkVTMi1IUzI1NitBMTI4S1ciLCJjdHkiOiJqd2sranNvbiIsImVuYyI6IkEyNTZHQ00iLCJwMmMiOjEwMDAwMCwicDJzIjoicjc2MnBfNm1xbExEMGpLNVVrOW1YQSJ9.8vAyS1STDUTotB1EWgDJ6ohxG75KRVZ5UXt-dIMViItsBUVPJGHzbQ.CgouZ6kSYDNIWmpC.3cLfV5YKgbImwX49_hGqvrM-VdhxP4ltn7s5kl6rNGTsT81NrlZfDHI5iYupywHEYYYVx1nGitA4w8-ShgWi7Uh0SIf-m4S9ZdgyghMt1r-TDqmqk9ageTvY1lkfhMWHFdpQ6DVT-D9eNGBgP0gxfxxfxTkhetgANoOtV-ChPoZ2qM-Fs4umnP8K1hQ3T-bDxJgTpfr4b08k1HzH5NTEe7Tb5SUPb94JNrrD6QvpMBw2MPE2mKdUMFcyERDE91qEQfGW-w8FHd3X6hTwRHsyVA9argce9et6TvIDdpTeKSxM6FeC7BA1YFIR-hwctsEQVjc6OE1iW5fcVMqQO9o.-BbaFXCJZ4OsLV1fYSWfmQ"
 			}
 		],
 		"claims": {
-			"minTLSCertDuration": "24h",
-			"maxTLSCertDuration": "8760h",
-			"defaultTLSCertDuration": "720h"
+			"minTLSCertDuration": "22h",
+			"maxTLSCertDuration": "8800h",
+			"defaultTLSCertDuration": "4400h",
+			"disableRenewal": false
 		}
 	},
 	"tls": {
