@@ -1,9 +1,10 @@
 <template>
-	<div class="w-100 p-2 pb-1 gradient-fade position-fixed d-flex align-items-center z-10" ref="navBar">
+	<div class="w-100 py-2 gradient-fade position-fixed d-flex align-items-center z-10" ref="navBar">
 		<div class="w-20 d-flex align-content-center justify-content-around">
-			<div class="logo-font display-4 pb-1">es</div>
+			<span class="logo-text">es </span>
+			<button>EN</button>
 		</div>
-		<nav class="w-60 nav d-flex align-content-center">
+		<nav class="w-60 nav align-content-center">
 			<router-link class="nav-link me-3 rounded" to="/">Home</router-link>
 			<router-link class="nav-link me-3 rounded" to="/about">About</router-link>
 		</nav>

@@ -1,10 +1,17 @@
 <template>
-	<svg
-		ref="logo"
-		xmlns="http://www.w3.org/2000/svg"
-		:viewBox="viewBox"
-		:width="width"
-	></svg>
+	<svg ref="logo" xmlns="http://www.w3.org/2000/svg" :viewBox="viewBox" :width="width"></svg>
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 5" class="w-80">
+		<defs>
+			<linearGradient id="logo-gradient" x1="100%" y1="0%" x2="0%" y2="100%">
+				<stop offset="0%" stop-color="#efadce" />
+				<stop offset="100%" stop-color="#a6e9d5" />
+			</linearGradient>
+		</defs>
+		<text x="14" y="5" class="logo-font" font-family="Gubblebum Blocky" font-size="0.5rem" fill="url(#logo-gradient)" xml:space="preserve">
+			<tspan>es</tspan>
+			<tspan>&nbsp</tspan>
+		</text>
+	</svg>
 </template>
 
 <script setup>

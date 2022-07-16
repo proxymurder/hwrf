@@ -1,5 +1,5 @@
 <template>
-	<main class="w-100 p-2 pt-1 position-absolute" v-scroll="scroll" ref="main">
+	<main class="w-100 p-2 pt-0 position-absolute" v-scroll="scroll" ref="main">
 		<slot></slot>
 	</main>
 </template>
