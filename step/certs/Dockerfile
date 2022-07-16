@@ -4,11 +4,14 @@ USER root
 
 RUN mkdir -p /var/local/step
 
-ADD cron/crontab /var/spool/cron/crontabs/root
-RUN chmod 0644 /var/spool/cron/crontabs/root
-
+COPY script.sh /script.sh
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+
+ADD cron/crontab /etc/crontabs/root
+
+RUN chmod +x /entrypoint.sh /script.sh
+RUN chmod 0644 /etc/crontabs/root
 
 ENTRYPOINT ["/entrypoint.sh"]
+
 CMD ["/usr/sbin/crond", "-l", "2", "-f"]
