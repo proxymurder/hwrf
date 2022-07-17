@@ -20,7 +20,7 @@ volumes:
         driver: local
 secrets:
     password:
-        file: ./step/ca/secrets/password
+        file: ./step/secrets/password
 services:
     step-ca:
         image: smallstep/step-ca
@@ -83,8 +83,7 @@ services:
         volumes:
             - ./api:/var/www/html
         working_dir: /var/www/html
-        entrypoint: ['npm']
-        command: ['run', 'watch']
+        command: ['npm', 'run', 'watch']
         networks:
             - api-network
     main:
@@ -93,8 +92,7 @@ services:
         volumes:
             - ./main:/usr/share/nginx/html
         working_dir: /usr/share/nginx/html
-        entrypoint: ['npm']
-        command: ['run', 'watch']
+        command: ['npm', 'run', 'watch']
         networks:
             - main-network
     www-api:

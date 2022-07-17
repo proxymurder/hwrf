@@ -1,0 +1,4 @@
+/ca/certs
+/ca/db
+/certs/*
+/secrets/*
