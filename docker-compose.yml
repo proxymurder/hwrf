@@ -30,13 +30,13 @@ services:
             - 443
         networks:
             - step-network
-    step-certs:
+    step-cron:
         build:
             context: ./step/certs
         image: e-stubb/step-cli
         volumes:
             - step:/home/step
-            - ./step/certs/tmp:/var/local/step
+            - ./step/certs:/var/local/step
         secrets:
             - password
         environment:
