@@ -1,4 +1,5 @@
 /ca/certs
 /ca/db
-/certs/*
-/secrets/*
+/ca/secrets
+/tmp
+/watch/ssl

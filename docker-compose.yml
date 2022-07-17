@@ -20,7 +20,7 @@ volumes:
         driver: local
 secrets:
     password:
-        file: ./step/secrets/password
+        file: ./step/ca/secrets/password
 services:
     step-ca:
         image: smallstep/step-ca
@@ -30,21 +30,21 @@ services:
             - 443
         networks:
             - step-network
-    step-cron:
+    step-watch:
         build:
-            context: ./step/certs
+            context: ./step/watch
         image: e-stubb/step-cli
         volumes:
             - step:/home/step
-            - ./step/certs:/var/local/step
+            - ./step/tmp:/var/local/step
         secrets:
             - password
         environment:
             STEPPATH: /home/step
             STEP_ALT_NAME: e-stubb.local
             STEP_CA_URL: https://step-ca
-            STEP_FINGERPRINT: d2d42a0a3cd01227ad1fb03082f29762107ae01452b6c6d86548b42e94565145
-            STEP_KID: p8dGsRgMtHu4SF5tBcF1dmUhG7KdVEFbmd4Q_e_oEzs
+            STEP_FINGERPRINT: 189d32fbbb83c20b4c465843097b9bb0e27c0c568d0e21102dae8963eb55166f
+            STEP_KID: 8UrhayxpHqNujqg-IHDFGtlQ0QFICUzjbIc9-e-z-Y8
             STEP_ROOT: /home/step/root_ca.crt
             STEP_PASSWORD_FILE: /run/secrets/password
         depends_on:
@@ -109,7 +109,7 @@ services:
         depends_on:
             - db
             - php
-            - step-certs
+            - step-watch
         networks:
             - local-network
             - api-network
