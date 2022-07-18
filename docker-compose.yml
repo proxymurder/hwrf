@@ -41,12 +41,13 @@ services:
             - password
         environment:
             STEPPATH: /home/step
-            STEP_ALT_NAME: e-stubb.local
             STEP_CA_URL: https://step-ca
             STEP_FINGERPRINT: 189d32fbbb83c20b4c465843097b9bb0e27c0c568d0e21102dae8963eb55166f
             STEP_KID: 8UrhayxpHqNujqg-IHDFGtlQ0QFICUzjbIc9-e-z-Y8
             STEP_ROOT: /home/step/root_ca.crt
             STEP_PASSWORD_FILE: /run/secrets/password
+            COMMON_NAME: e-stubb.local
+            DOMAINS: 'localhost e-stubb.test e-stubb.local *.e-stubb.local'
         depends_on:
             - step-ca
         networks:
@@ -86,15 +87,6 @@ services:
         command: ['npm', 'run', 'watch']
         networks:
             - api-network
-    main:
-        image: node:alpine
-        user: node
-        volumes:
-            - ./main:/usr/share/nginx/html
-        working_dir: /usr/share/nginx/html
-        command: ['npm', 'run', 'watch']
-        networks:
-            - main-network
     www-api:
         build:
             context: ./www
@@ -113,6 +105,21 @@ services:
         networks:
             - local-network
             - api-network
+    main:
+        image: node:alpine
+        user: node
+        volumes:
+            - ./main:/usr/share/nginx/html
+        working_dir: /usr/share/nginx/html
+        ports:
+            - 80
+            - 443
+        command: ['npm', 'run', 'dev']
+        depends_on:
+            - www-api
+        networks:
+            - local-network
+            - main-network
     www-main:
         build:
             context: ./www
@@ -140,6 +147,7 @@ services:
             - ./www/nginx/ssl.conf:/etc/nginx/ssl.conf
         depends_on:
             - www-main
+            - main
         networks:
             - local-network
         ports:

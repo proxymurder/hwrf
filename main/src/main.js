@@ -1,4 +1,4 @@
-import bootstrap from 'bootstrap';
+import 'bootstrap';
 import '@/assets/scss/app.scss';
 
 import axios from 'axios';
@@ -21,24 +21,25 @@ import App from '@/App.vue';
 import router from './router';
 
 const app = createApp(App);
+const title = import.meta.env.VITE_TITLE;
 
 app.provide('axios', axios);
 app.provide('env', {
 	routes: {
 		accounts: {
-			authorize: process.env.VUE_APP_OAUTH_URL + '/oauth/authorize',
-			token: process.env.VUE_APP_OAUTH_URL + '/oauth/token',
-			logout: process.env.VUE_APP_OAUTH_URL + '/api/logout',
+			authorize: 'https://accounts.e-stubb.local/oauth/authorize',
+			token: 'https://accounts.e-stubb.local/oauth/token',
+			logout: 'https://accounts.e-stubb.local/api/logout',
 		},
 		api: {
-			url: process.env.VUE_APP_API_URL,
-			location: process.env.VUE_APP_API_URL + '/location',
+			url: 'https://api.e-stubb.local',
+			location: 'https://api.e-stubb.local/location',
 		},
-		redirect: process.env.VUE_APP_URL + '/auth/callback',
+		redirect: import.meta.BASE_URL + '/auth/callback',
 	},
 	clients: {
 		api: {
-			id: process.env.VUE_APP_OAUTH_CLIENT,
+			id: import.meta.VITE_OAUTH_CLIENT,
 		},
 	},
 });
