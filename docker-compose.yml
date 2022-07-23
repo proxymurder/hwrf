@@ -71,7 +71,7 @@ services:
             context: ./api
         image: e-stubb/php
         volumes:
-            - ./api:/var/www/html
+            - ./api/src:/var/www/html
         ports:
             - 9000
         depends_on:
@@ -82,7 +82,7 @@ services:
         image: node:alpine
         user: node
         volumes:
-            - ./api:/var/www/html
+            - ./api/src:/var/www/html
         working_dir: /var/www/html
         command: ['npm', 'run', 'watch']
         networks:
@@ -93,7 +93,7 @@ services:
         image: e-stubb/nginx
         volumes:
             - step:/home/step:ro
-            - ./api:/var/www/html
+            - ./api/src:/var/www/html
             - ./www/nginx/api:/etc/nginx/conf.d
             - ./www/nginx/ssl.conf:/etc/nginx/ssl.conf
         ports:
