@@ -68,10 +68,10 @@ services:
             - api-network
     php:
         build:
-            context: ./api
+            context: ./php
         image: e-stubb/php
         volumes:
-            - ./api/src:/var/www/html
+            - ./php/api:/var/www/html
         ports:
             - 9000
         depends_on:
