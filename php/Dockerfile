@@ -31,8 +31,8 @@ RUN apk update \
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # install artisan
-RUN echo '#!/bin/bash\nphp artisan "$@"' > /usr/local/bin/artisan \
+RUN printf "%s\n\n%s" "#!/bin/sh" 'php artisan "$@"' > /usr/local/bin/artisan \
     && chmod +x /usr/local/bin/artisan
-   
+
 RUN chown -R www-data:www-data /var/www
 RUN chmod 755 /var/www

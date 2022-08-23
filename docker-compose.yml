@@ -1,22 +1,22 @@
 networks:
     api-network:
-        name: e-stubb/api-network
+        name: ${APP_NAME}/api-network
         driver: bridge
     local-network:
-        name: e-stubb/local-network
+        name: ${APP_NAME}/local-network
         driver: bridge
     main-network:
-        name: e-stubb/main-network
+        name: ${APP_NAME}/main-network
         driver: bridge
     step-network:
-        name: e-stubb/step-network
+        name: ${APP_NAME}/step-network
         driver: bridge
 volumes:
     step:
-        name: e-stubb-step-volume
+        name: ${APP_NAME}-step-volume
         driver: local
     mysql:
-        name: e-stubb-mysql-volume
+        name: ${APP_NAME}-mysql-volume
         driver: local
 secrets:
     password:
@@ -26,130 +26,136 @@ services:
         image: smallstep/step-ca
         volumes:
             - ./step/ca:/home/step
-        ports:
-            - 443
         networks:
             - step-network
+        ports:
+            - 443
     step-watch:
         build:
             context: ./step/watch
-        image: e-stubb/step-cli
+        image: ${APP_NAME}/step-cli
+        environment:
+            COMMON_NAME: ${STEP_WATCH_NAME}
+            DOMAINS: ${STEP_WATCH_DOMAINS}
+            STEPPATH: /home/step
+            STEP_CA_URL: https://step-ca
+            STEP_FINGERPRINT: ${STEP_WATCH_FINGERPRINT}
+            STEP_KID: ${STEP_WATCH_KID}
+            STEP_PASSWORD_FILE: /run/secrets/password
+            STEP_ROOT: /home/step/root_ca.crt
         volumes:
             - step:/home/step
             - ./step/tmp:/var/local/step
         secrets:
             - password
-        environment:
-            STEPPATH: /home/step
-            STEP_CA_URL: https://step-ca
-            STEP_FINGERPRINT: 189d32fbbb83c20b4c465843097b9bb0e27c0c568d0e21102dae8963eb55166f
-            STEP_KID: 8UrhayxpHqNujqg-IHDFGtlQ0QFICUzjbIc9-e-z-Y8
-            STEP_ROOT: /home/step/root_ca.crt
-            STEP_PASSWORD_FILE: /run/secrets/password
-            COMMON_NAME: e-stubb.local
-            DOMAINS: 'localhost e-stubb.test e-stubb.local *.e-stubb.local'
-        depends_on:
-            - step-ca
         networks:
             - step-network
+        depends_on:
+            - step-ca
     db:
         image: mysql:latest
+        environment:
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USER}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
         volumes:
             - mysql:/var/lib/mysql
-        environment:
-            MYSQL_ROOT_PASSWORD: secret
-            MYSQL_ROOT_HOST: '%'
-            MYSQL_DATABASE: e-stubb
-            MYSQL_USER: root
-            MYSQL_PASSWORD: secret
-        ports:
-            - 3306
         networks:
             - api-network
+        ports:
+            - 3306
     php:
         build:
             context: ./php
-        image: e-stubb/php
+        image: ${APP_NAME}/php
         volumes:
             - ./php/api:/var/www/html
+        networks:
+            - api-network
         ports:
             - 9000
         depends_on:
             - db
-        networks:
-            - api-network
     api:
         image: node:alpine
         user: node
-        volumes:
-            - ./api/src:/var/www/html
         working_dir: /var/www/html
-        command: ['npm', 'run', 'watch']
+        volumes:
+            - ./php/api:/var/www/html
+        command: ['npm', 'run', 'dev']
         networks:
             - api-network
+            - local-network
+        ports:
+            - 80
+        depends_on:
+            - db
+            - php
     www-api:
         build:
             context: ./www
-        image: e-stubb/nginx
+        image: ${APP_NAME}/nginx
         volumes:
             - step:/home/step:ro
-            - ./api/src:/var/www/html
-            - ./www/nginx/api:/etc/nginx/conf.d
-            - ./www/nginx/ssl.conf:/etc/nginx/ssl.conf
+            - ./php/api:/var/www/html
+            - ./www/nginx/conf.d/api:/etc/nginx/conf.d
+        networks:
+            - api-network
+            - local-network
         ports:
             - 80
         depends_on:
             - db
             - php
             - step-watch
-        networks:
-            - local-network
-            - api-network
     main:
         image: node:alpine
         user: node
-        volumes:
-            - ./main:/usr/share/nginx/html
         working_dir: /usr/share/nginx/html
+        volumes:
+            - ./node/main:/usr/share/nginx/html
+        command: ['npm', 'run', 'dev']
+        networks:
+            - main-network
+            - local-network
         ports:
             - 80
-            - 443
-        command: ['npm', 'run', 'dev']
         depends_on:
             - www-api
-        networks:
-            - local-network
-            - main-network
     www-main:
         build:
             context: ./www
-        image: e-stubb/nginx
+        image: ${APP_NAME}/nginx
         volumes:
             - step:/home/step:ro
-            - ./main:/usr/share/nginx/html
-            - ./www/nginx/main:/etc/nginx/conf.d
-            - ./www/nginx/ssl.conf:/etc/nginx/ssl.conf
+            - ./node/main:/usr/share/nginx/html
+            - ./www/nginx/conf.d/main:/etc/nginx/conf.d
+        networks:
+            - main-network
+            - local-network
         ports:
             - 80
         depends_on:
             - www-api
-        networks:
-            - local-network
-            - main-network
     www:
         build:
             context: ./www
-        image: e-stubb/nginx
+        image: ${APP_NAME}/nginx
         volumes:
             - step:/home/step:ro
-            - ./www/nginx/proxy:/etc/nginx/conf.d
+            - ./www/nginx/conf.d/proxy-beta:/etc/nginx/conf.d
+            - ./www/nginx/hmr.conf:/etc/nginx/hmr.conf
+            - ./www/nginx/https.conf:/etc/nginx/https.conf
             - ./www/nginx/proxy.conf:/etc/nginx/proxy.conf
-            - ./www/nginx/ssl.conf:/etc/nginx/ssl.conf
-        depends_on:
-            - www-main
-            - main
         networks:
             - local-network
         ports:
             - 80:80
             - 443:443
+        depends_on:
+            - api
+            - main
+            - www-main
+            - www-api
