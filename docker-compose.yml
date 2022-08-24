@@ -66,6 +66,8 @@ services:
             - api-network
         ports:
             - 3306
+        depends_on:
+            - step-watch
     php:
         build:
             context: ./php
@@ -78,21 +80,6 @@ services:
             - 9000
         depends_on:
             - db
-    api:
-        image: node:alpine
-        user: node
-        working_dir: /var/www/html
-        volumes:
-            - ./php/api:/var/www/html
-        command: ['npm', 'run', 'dev']
-        networks:
-            - api-network
-            - local-network
-        ports:
-            - 80
-        depends_on:
-            - db
-            - php
     www-api:
         build:
             context: ./www
@@ -107,23 +94,7 @@ services:
         ports:
             - 80
         depends_on:
-            - db
             - php
-            - step-watch
-    main:
-        image: node:alpine
-        user: node
-        working_dir: /usr/share/nginx/html
-        volumes:
-            - ./node/main:/usr/share/nginx/html
-        command: ['npm', 'run', 'dev']
-        networks:
-            - main-network
-            - local-network
-        ports:
-            - 80
-        depends_on:
-            - www-api
     www-main:
         build:
             context: ./www
@@ -139,13 +110,41 @@ services:
             - 80
         depends_on:
             - www-api
-    www:
+    api:
+        image: node:alpine
+        user: node
+        working_dir: /var/www/html
+        volumes:
+            - ./php/api:/var/www/html
+        command: ['npm', 'run', 'dev']
+        networks:
+            - api-network
+            - local-network
+        ports:
+            - 80
+        depends_on:
+            - www-main
+    main:
+        image: node:alpine
+        user: node
+        working_dir: /usr/share/nginx/html
+        volumes:
+            - ./node/main:/usr/share/nginx/html
+        command: ['npm', 'run', 'dev']
+        networks:
+            - main-network
+            - local-network
+        ports:
+            - 80
+        depends_on:
+            - api
+    dev:
         build:
             context: ./www
         image: ${APP_NAME}/nginx
         volumes:
             - step:/home/step:ro
-            - ./www/nginx/conf.d/proxy-beta:/etc/nginx/conf.d
+            - ./www/nginx/conf.d/proxy/dev:/etc/nginx/conf.d
             - ./www/nginx/hmr.conf:/etc/nginx/hmr.conf
             - ./www/nginx/https.conf:/etc/nginx/https.conf
             - ./www/nginx/proxy.conf:/etc/nginx/proxy.conf
@@ -155,7 +154,4 @@ services:
             - 80:80
             - 443:443
         depends_on:
-            - api
             - main
-            - www-main
-            - www-api
