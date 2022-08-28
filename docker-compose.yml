@@ -111,7 +111,9 @@ services:
         depends_on:
             - www-api
     api:
-        image: node:alpine
+        build:
+            context: ./node
+        image: ${APP_NAME}/node
         user: node
         working_dir: /var/www/html
         volumes:
@@ -123,9 +125,11 @@ services:
         ports:
             - 80
         depends_on:
-            - www-main
+            - www-api
     main:
-        image: node:alpine
+        build:
+            context: ./node
+        image: ${APP_NAME}/node
         user: node
         working_dir: /usr/share/nginx/html
         volumes:
@@ -137,7 +141,7 @@ services:
         ports:
             - 80
         depends_on:
-            - api
+            - www-api
     dev:
         build:
             context: ./www
@@ -145,13 +149,14 @@ services:
         volumes:
             - step:/home/step:ro
             - ./www/nginx/conf.d/proxy/dev:/etc/nginx/conf.d
-            - ./www/nginx/hmr.conf:/etc/nginx/hmr.conf
             - ./www/nginx/https.conf:/etc/nginx/https.conf
-            - ./www/nginx/proxy.conf:/etc/nginx/proxy.conf
+            - ./www/nginx/proxy-v2.conf:/etc/nginx/proxy-v2.conf
         networks:
             - local-network
         ports:
             - 80:80
             - 443:443
         depends_on:
+            - api
             - main
+            - www-main
