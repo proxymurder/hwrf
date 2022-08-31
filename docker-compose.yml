@@ -150,7 +150,7 @@ services:
             - step:/home/step:ro
             - ./www/nginx/conf.d/proxy/dev:/etc/nginx/conf.d
             - ./www/nginx/https.conf:/etc/nginx/https.conf
-            - ./www/nginx/proxy-v2.conf:/etc/nginx/proxy-v2.conf
+            - ./www/nginx/proxy.conf:/etc/nginx/proxy.conf
         networks:
             - local-network
         ports:
