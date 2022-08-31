@@ -1,0 +1,7 @@
+.env
+/node/main/*
+/php/api/*
+/step/ca/certs
+/step/ca/db
+/step/ca/secrets
+/step/tmp
