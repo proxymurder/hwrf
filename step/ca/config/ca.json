@@ -18,7 +18,7 @@
 		"provisioners": [
 			{
 				"type": "JWK",
-				"name": "admin@e-stubb.local",
+				"name": "admin",
 				"key": {
 					"use": "sig",
 					"kty": "EC",
