@@ -1,12 +1,12 @@
 networks:
-    api-network:
-        name: ${APP_NAME}/api-network
+    backend-network:
+        name: ${APP_NAME}/backend-network
+        driver: bridge
+    frontend-network:
+        name: ${APP_NAME}/frontend-network
         driver: bridge
     local-network:
         name: ${APP_NAME}/local-network
-        driver: bridge
-    main-network:
-        name: ${APP_NAME}/main-network
         driver: bridge
     step-network:
         name: ${APP_NAME}/step-network
@@ -61,11 +61,9 @@ services:
         volumes:
             - mysql:/var/lib/mysql
         networks:
-            - api-network
+            - backend-network
         ports:
             - 3306
-        depends_on:
-            - step-watch
     php:
         build:
             context: ./php
@@ -73,41 +71,11 @@ services:
         volumes:
             - ./php/api:/var/www/html
         networks:
-            - api-network
+            - backend-network
         ports:
             - 9000
         depends_on:
             - db
-    www-api:
-        build:
-            context: ./www
-        image: ${APP_NAME}/nginx
-        volumes:
-            - step:/home/step:ro
-            - ./php/api:/var/www/html
-            - ./www/nginx/conf.d/api:/etc/nginx/conf.d
-        networks:
-            - api-network
-            - local-network
-        ports:
-            - 80
-        depends_on:
-            - php
-    www-main:
-        build:
-            context: ./www
-        image: ${APP_NAME}/nginx
-        volumes:
-            - step:/home/step:ro
-            - ./node/main:/usr/share/nginx/html
-            - ./www/nginx/conf.d/main:/etc/nginx/conf.d
-        networks:
-            - main-network
-            - local-network
-        ports:
-            - 80
-        depends_on:
-            - www-api
     api:
         build:
             context: ./node
@@ -118,12 +86,28 @@ services:
             - ./php/api:/var/www/html
         command: ['npm', 'run', 'dev']
         networks:
-            - api-network
+            - backend-network
+            - local-network
+        ports:
+            - 5173
+        depends_on:
+            - step-watch
+    www-api:
+        build:
+            context: ./www
+        image: ${APP_NAME}/nginx
+        volumes:
+            - step:/home/step:ro
+            - ./php/api:/var/www/html
+            - ./www/nginx/conf.d/api:/etc/nginx/conf.d
+        networks:
+            - backend-network
             - local-network
         ports:
             - 80
         depends_on:
-            - www-api
+            - step-watch
+            - php
     main:
         build:
             context: ./node
@@ -134,12 +118,26 @@ services:
             - ./node/main:/usr/share/nginx/html
         command: ['npm', 'run', 'dev']
         networks:
-            - main-network
+            - frontend-network
+            - local-network
+        ports:
+            - 5173
+        depends_on:
+            - step-watch
+    www-main:
+        build:
+            context: ./www
+        image: ${APP_NAME}/nginx
+        volumes:
+            - step:/home/step:ro
+            - ./node/main:/usr/share/nginx/html
+            - ./www/nginx/conf.d/main:/etc/nginx/conf.d
+        networks:
             - local-network
         ports:
             - 80
         depends_on:
-            - www-api
+            - step-watch
     dev:
         build:
             context: ./www
@@ -155,6 +153,7 @@ services:
             - 80:80
             - 443:443
         depends_on:
+            - step-watch
             - www-api
             - www-main
             - api
