@@ -1,0 +1,6 @@
+[submodule "php/api"]
+	path = php/api
+	url = git@github.com:proxymurder/laravel-api.git
+[submodule "node/main"]
+	path = node/main
+	url = git@github.com:proxymurder/vuejs-app.git
