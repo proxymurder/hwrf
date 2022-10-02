@@ -76,24 +76,7 @@ services:
             - 9000
         depends_on:
             - db
-    php-www:
-        build:
-            context: ./www
-        image: ${APP_NAME}/nginx
-        volumes:
-            - step:/home/step:ro
-            - ./php/backend:/var/www/html
-            - ./www/nginx/conf.d/php:/etc/nginx/conf.d
-            - ./www/nginx/https.conf:/etc/nginx/https.conf
-        networks:
-            - backend-network
-            - local-network
-        ports:
-            - 443
-        depends_on:
-            - certwatch
-            - php
-    laravel:
+    vite-backend:
         build:
             context: ./node
         image: ${APP_NAME}/node
@@ -103,13 +86,29 @@ services:
             - ./php/backend:/var/www/html
         command: ['npm', 'run', 'dev']
         networks:
+            - local-network
+        ports:
+            - 443
+        depends_on:
+            - certwatch
+    backend:
+        build:
+            context: ./nginx
+        image: ${APP_NAME}/nginx
+        volumes:
+            - step:/home/step:ro
+            - ./php/backend:/var/www/html
+            - ./nginx/conf.d/php:/etc/nginx/conf.d
+            - ./nginx/extra/https.conf:/etc/nginx/extra/https.conf
+        networks:
             - backend-network
             - local-network
         ports:
-            - 5173
+            - 443
         depends_on:
             - certwatch
-    app:
+            - php
+    vite:
         build:
             context: ./node
         image: ${APP_NAME}/node
@@ -119,21 +118,20 @@ services:
             - ./node/app:/usr/share/nginx/html
         command: ['npm', 'run', 'dev']
         networks:
-            - frontend-network
             - local-network
         ports:
-            - 5173
+            - 443
         depends_on:
             - certwatch
-    app-www:
+    app:
         build:
-            context: ./www
+            context: ./nginx
         image: ${APP_NAME}/nginx
         volumes:
             - step:/home/step:ro
             - ./node/app:/usr/share/nginx/html
-            - ./www/nginx/conf.d/node:/etc/nginx/conf.d
-            - ./www/nginx/https.conf:/etc/nginx/https.conf
+            - ./nginx/conf.d/node:/etc/nginx/conf.d
+            - ./nginx/extra/https.conf:/etc/nginx/extra/https.conf
         networks:
             - local-network
         ports:
@@ -146,35 +144,35 @@ services:
         image: ${APP_NAME}/nginx
         volumes:
             - step:/home/step:ro
-            - ./www/nginx/conf.d/proxy/dev:/etc/nginx/conf.d
-            - ./www/nginx/https.conf:/etc/nginx/https.conf
-            - ./www/nginx/proxy.conf:/etc/nginx/proxy.conf
+            - ./nginx/conf.d/proxy/dev:/etc/nginx/conf.d
+            - ./nginx/extra/https.conf:/etc/nginx/extra/https.conf
+            - ./nginx/extra/proxy.conf:/etc/nginx/extra/proxy.conf
         networks:
             - local-network
         ports:
             - 80:80
             - 443:443
         depends_on:
-            - certwatch
             - app
-            - laravel
-            - app-www
-            - php-www
-    www:
+            - certwatch
+            - backend
+            - vite
+            - vite-backend
+    prod:
         build:
             context: ./www
         image: ${APP_NAME}/nginx
         volumes:
             - step:/home/step:ro
             - ./www/nginx/conf.d/proxy/prod:/etc/nginx/conf.d
-            - ./www/nginx/https.conf:/etc/nginx/https.conf
-            - ./www/nginx/proxy.conf:/etc/nginx/proxy.conf
+            - ./www/nginx/extra/https.conf:/etc/nginx/extra/https.conf
+            - ./www/nginx/extra/proxy.conf:/etc/nginx/extra/proxy.conf
         networks:
             - local-network
         ports:
             - 80:80
             - 443:443
         depends_on:
+            - app
             - certwatch
-            - php-www
-            - app-www
+            - backend

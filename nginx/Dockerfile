@@ -5,7 +5,7 @@ RUN apk update
 RUN apk add --no-cache \
     inotify-tools
 
-# Install cert watch
+# Install certwatch
 COPY ./certwatch.sh /certwatch.sh
 COPY ./entrypoint.sh /entrypoint.sh
 

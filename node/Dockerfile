@@ -7,4 +7,13 @@ RUN apk add --no-cache \
     git 
 
 # Install/Update npm global dependencies
-RUN npm install -g npm-check-updates npm
+RUN npm install -g npm npm-check-updates nodemon
+
+# Install certwatch
+COPY ./certwatch.sh /certwatch.sh
+COPY ./entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /certwatch.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT [ "/entrypoint.sh" ]
