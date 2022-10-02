@@ -89,7 +89,6 @@ services:
             - backend-network
             - local-network
         ports:
-            - 80
             - 443
         depends_on:
             - certwatch
@@ -110,14 +109,14 @@ services:
             - 5173
         depends_on:
             - certwatch
-    main:
+    app:
         build:
             context: ./node
         image: ${APP_NAME}/node
         working_dir: /usr/share/nginx/html
         volumes:
             - step:/home/step:ro
-            - ./node/main:/usr/share/nginx/html
+            - ./node/app:/usr/share/nginx/html
         command: ['npm', 'run', 'dev']
         networks:
             - frontend-network
@@ -126,19 +125,18 @@ services:
             - 5173
         depends_on:
             - certwatch
-    main-www:
+    app-www:
         build:
             context: ./www
         image: ${APP_NAME}/nginx
         volumes:
             - step:/home/step:ro
-            - ./node/main:/usr/share/nginx/html
+            - ./node/app:/usr/share/nginx/html
             - ./www/nginx/conf.d/node:/etc/nginx/conf.d
             - ./www/nginx/https.conf:/etc/nginx/https.conf
         networks:
             - local-network
         ports:
-            - 80
             - 443
         depends_on:
             - certwatch
@@ -158,10 +156,10 @@ services:
             - 443:443
         depends_on:
             - certwatch
-            - php-www
-            - main-www
+            - app
             - laravel
-            - main
+            - app-www
+            - php-www
     www:
         build:
             context: ./www
@@ -179,4 +177,4 @@ services:
         depends_on:
             - certwatch
             - php-www
-            - main-www
+            - app-www
