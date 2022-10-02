@@ -1,14 +1,18 @@
 FROM nginx:alpine
 
-RUN apk add inotify-tools
+# Install dependencies
+RUN apk update
+RUN apk add --no-cache \
+    inotify-tools
 
-COPY certwatch.sh /certwatch.sh
-COPY entrypoint.sh /entrypoint.sh
+# Install cert watch
+COPY ./certwatch.sh /certwatch.sh
+COPY ./entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /certwatch.sh
 RUN chmod +x /entrypoint.sh
 
-# Certificate watcher and nginx
 ENTRYPOINT ["/entrypoint.sh"]
 
+# Start nginx service
 CMD ["nginx", "-g", "daemon off;"]

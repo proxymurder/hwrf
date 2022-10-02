@@ -5,7 +5,7 @@
 	"key": "/home/step/secrets/intermediate_ca_key",
 	"address": ":443",
 	"insecureAddress": "",
-	"dnsNames": ["step-ca"],
+	"dnsNames": ["ca"],
 	"logger": {
 		"format": "text"
 	},

@@ -22,7 +22,7 @@ secrets:
     password:
         file: ./step/ca/secrets/password
 services:
-    step-ca:
+    ca:
         image: smallstep/step-ca
         volumes:
             - ./step/ca:/home/step
@@ -30,19 +30,19 @@ services:
             - step-network
         ports:
             - 443
-    step-watch:
+    certwatch:
         build:
             context: ./step/watch
         image: ${APP_NAME}/step-cli
         environment:
-            COMMON_NAME: ${STEP_WATCH_NAME}
-            DOMAINS: ${STEP_WATCH_DOMAINS}
-            STEPPATH: /home/step
-            STEP_CA_URL: https://step-ca
-            STEP_FINGERPRINT: ${STEP_WATCH_FINGERPRINT}
-            STEP_KID: ${STEP_WATCH_KID}
-            STEP_PASSWORD_FILE: /run/secrets/password
-            STEP_ROOT: /home/step/root_ca.crt
+            COMMON_NAME: ${CERTWATCH_NAME}
+            DOMAINS: ${CERTWATCH_DOMAINS}
+            STEPPATH: ${CERTWATCH_PATH}
+            STEP_CA_URL: ${CERTWATCH_URL}
+            STEP_FINGERPRINT: ${CERTWATCH_FINGERPRINT}
+            STEP_KID: ${CERTWATCH_KID}
+            STEP_PASSWORD_FILE: ${CERTWATCH_PASSWORD_FILE}
+            STEP_ROOT: ${CERTWATCH_ROOT}
         volumes:
             - step:/home/step
             - ./step/tmp:/var/local/step
@@ -51,7 +51,7 @@ services:
         networks:
             - step-network
         depends_on:
-            - step-ca
+            - ca
     db:
         image: mysql:latest
         environment:
@@ -69,21 +69,39 @@ services:
             context: ./php
         image: ${APP_NAME}/php
         volumes:
-            - ./php/api:/var/www/html
+            - ./php/backend:/var/www/html
         networks:
             - backend-network
         ports:
             - 9000
         depends_on:
             - db
-    api:
+    php-www:
+        build:
+            context: ./www
+        image: ${APP_NAME}/nginx
+        volumes:
+            - step:/home/step:ro
+            - ./php/backend:/var/www/html
+            - ./www/nginx/conf.d/php:/etc/nginx/conf.d
+            - ./www/nginx/https.conf:/etc/nginx/https.conf
+        networks:
+            - backend-network
+            - local-network
+        ports:
+            - 80
+            - 443
+        depends_on:
+            - certwatch
+            - php
+    laravel:
         build:
             context: ./node
         image: ${APP_NAME}/node
-        user: node
         working_dir: /var/www/html
         volumes:
-            - ./php/api:/var/www/html
+            - step:/home/step:ro
+            - ./php/backend:/var/www/html
         command: ['npm', 'run', 'dev']
         networks:
             - backend-network
@@ -91,30 +109,14 @@ services:
         ports:
             - 5173
         depends_on:
-            - step-watch
-    www-api:
-        build:
-            context: ./www
-        image: ${APP_NAME}/nginx
-        volumes:
-            - step:/home/step:ro
-            - ./php/api:/var/www/html
-            - ./www/nginx/conf.d/api:/etc/nginx/conf.d
-        networks:
-            - backend-network
-            - local-network
-        ports:
-            - 80
-        depends_on:
-            - step-watch
-            - php
+            - certwatch
     main:
         build:
             context: ./node
         image: ${APP_NAME}/node
-        user: node
         working_dir: /usr/share/nginx/html
         volumes:
+            - step:/home/step:ro
             - ./node/main:/usr/share/nginx/html
         command: ['npm', 'run', 'dev']
         networks:
@@ -123,21 +125,23 @@ services:
         ports:
             - 5173
         depends_on:
-            - step-watch
-    www-main:
+            - certwatch
+    main-www:
         build:
             context: ./www
         image: ${APP_NAME}/nginx
         volumes:
             - step:/home/step:ro
             - ./node/main:/usr/share/nginx/html
-            - ./www/nginx/conf.d/main:/etc/nginx/conf.d
+            - ./www/nginx/conf.d/node:/etc/nginx/conf.d
+            - ./www/nginx/https.conf:/etc/nginx/https.conf
         networks:
             - local-network
         ports:
             - 80
+            - 443
         depends_on:
-            - step-watch
+            - certwatch
     dev:
         build:
             context: ./www
@@ -153,8 +157,26 @@ services:
             - 80:80
             - 443:443
         depends_on:
-            - step-watch
-            - www-api
-            - www-main
-            - api
+            - certwatch
+            - php-www
+            - main-www
+            - laravel
             - main
+    www:
+        build:
+            context: ./www
+        image: ${APP_NAME}/nginx
+        volumes:
+            - step:/home/step:ro
+            - ./www/nginx/conf.d/proxy/prod:/etc/nginx/conf.d
+            - ./www/nginx/https.conf:/etc/nginx/https.conf
+            - ./www/nginx/proxy.conf:/etc/nginx/proxy.conf
+        networks:
+            - local-network
+        ports:
+            - 80:80
+            - 443:443
+        depends_on:
+            - certwatch
+            - php-www
+            - main-www

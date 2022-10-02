@@ -1,5 +1,5 @@
-[submodule "php/api"]
-	path = php/api
+[submodule "php/backend"]
+	path = php/backend
 	url = git@github.com:proxymurder/laravel-api.git
 [submodule "node/main"]
 	path = node/main
