@@ -1,15 +1,12 @@
 networks:
-    backend-network:
-        name: ${APP_NAME}/backend-network
+    backend:
+        name: ${APP_NAME}-backend
         driver: bridge
-    frontend-network:
-        name: ${APP_NAME}/frontend-network
+    local:
+        name: ${APP_NAME}-local
         driver: bridge
-    local-network:
-        name: ${APP_NAME}/local-network
-        driver: bridge
-    step-network:
-        name: ${APP_NAME}/step-network
+    step:
+        name: ${APP_NAME}-step
         driver: bridge
 volumes:
     step:
@@ -27,7 +24,7 @@ services:
         volumes:
             - ./step/ca:/home/step
         networks:
-            - step-network
+            - step
         ports:
             - 443
     certwatch:
@@ -49,7 +46,7 @@ services:
         secrets:
             - password
         networks:
-            - step-network
+            - step
         depends_on:
             - ca
     db:
@@ -61,7 +58,7 @@ services:
         volumes:
             - mysql:/var/lib/mysql
         networks:
-            - backend-network
+            - backend
         ports:
             - 3306
     php:
@@ -71,7 +68,7 @@ services:
         volumes:
             - ./php/backend:/var/www/html
         networks:
-            - backend-network
+            - backend
         ports:
             - 9000
         depends_on:
@@ -86,7 +83,7 @@ services:
             - ./php/backend:/var/www/html
         command: ['npm', 'run', 'dev']
         networks:
-            - local-network
+            - local
         ports:
             - 443
         depends_on:
@@ -101,8 +98,8 @@ services:
             - ./nginx/conf.d/php:/etc/nginx/conf.d
             - ./nginx/extra/https.conf:/etc/nginx/extra/https.conf
         networks:
-            - backend-network
-            - local-network
+            - backend
+            - local
         ports:
             - 443
         depends_on:
@@ -118,7 +115,7 @@ services:
             - ./node/app:/usr/share/nginx/html
         command: ['npm', 'run', 'dev']
         networks:
-            - local-network
+            - local
         ports:
             - 443
         depends_on:
@@ -133,14 +130,14 @@ services:
             - ./nginx/conf.d/node:/etc/nginx/conf.d
             - ./nginx/extra/https.conf:/etc/nginx/extra/https.conf
         networks:
-            - local-network
+            - local
         ports:
             - 443
         depends_on:
             - certwatch
     dev:
         build:
-            context: ./www
+            context: ./nginx
         image: ${APP_NAME}/nginx
         volumes:
             - step:/home/step:ro
@@ -148,7 +145,7 @@ services:
             - ./nginx/extra/https.conf:/etc/nginx/extra/https.conf
             - ./nginx/extra/proxy.conf:/etc/nginx/extra/proxy.conf
         networks:
-            - local-network
+            - local
         ports:
             - 80:80
             - 443:443
@@ -160,15 +157,15 @@ services:
             - vite-backend
     prod:
         build:
-            context: ./www
+            context: ./nginx
         image: ${APP_NAME}/nginx
         volumes:
             - step:/home/step:ro
-            - ./www/nginx/conf.d/proxy/prod:/etc/nginx/conf.d
-            - ./www/nginx/extra/https.conf:/etc/nginx/extra/https.conf
-            - ./www/nginx/extra/proxy.conf:/etc/nginx/extra/proxy.conf
+            - ./nginx/conf.d/proxy/prod:/etc/nginx/conf.d
+            - ./nginx/extra/https.conf:/etc/nginx/extra/https.conf
+            - ./nginx/extra/proxy.conf:/etc/nginx/extra/proxy.conf
         networks:
-            - local-network
+            - local
         ports:
             - 80:80
             - 443:443
