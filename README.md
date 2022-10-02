@@ -12,10 +12,15 @@ Configuration is included so that user has an example. Whole contents of the ste
 
 ```
 \\ defaults.json
+"ca-url":"https://ca" \\ docker-compose container name
+```
 
-"ca-url":"https://step-ca" \\ docker-compose container name
-
+```
 \\ ca.json
+
+"dnsNames": ["ca"],
+
+ ...
 
 "claims":
 {
