@@ -4,3 +4,6 @@
 [submodule "node/app"]
 	path = node/app
 	url = git@github.com:proxymurder/vuejs-app.git
+[submodule "node/socket.io"]
+	path = node/app
+	url = git@github.com:proxymurder/socket.io.git
