@@ -76,7 +76,7 @@ services:
             - 9000
         depends_on:
             - db
-    laravel:
+    backend:
         build:
             context: ./node
         image: ${APP_NAME}/node
@@ -84,6 +84,7 @@ services:
             - VITE_SERVER_HMR=${DEV_SERVER_LARAVEL_HMR}
             - VITE_SERVER_KEY=${DEV_SERVER_KEY}
             - VITE_SERVER_CERT=${DEV_SERVER_CERT}
+            - VITE_SERVER_CERTPATH=../../..${DEV_SERVER_CERT}
         working_dir: /var/www/html
         volumes:
             - step:/home/step:ro
@@ -121,6 +122,7 @@ services:
         environment:
             - VITE_SERVER_KEY=${DEV_SERVER_KEY}
             - VITE_SERVER_CERT=${DEV_SERVER_CERT}
+            - VITE_SERVER_CERTPATH=../../../..${DEV_SERVER_CERT}
         working_dir: /usr/share/nginx/html
         volumes:
             - step:/home/step:ro
@@ -169,7 +171,7 @@ services:
             - php-www
             - certwatch
             - app
-            - laravel
+            - backend
     www:
         build:
             context: ./nginx
