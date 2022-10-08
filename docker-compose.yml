@@ -1,15 +1,18 @@
 networks:
     backend:
-        name: ${APP_NAME}-backend
+        name: ${APP_NAME}-backend-network
         driver: bridge
     dev:
-        name: ${APP_NAME}-dev
+        name: ${APP_NAME}-dev-network
         driver: bridge
     local:
-        name: ${APP_NAME}-local
+        name: ${APP_NAME}-local-network
+        driver: bridge
+    redis:
+        name: ${APP_NAME}-redis-network
         driver: bridge
     step:
-        name: ${APP_NAME}-step
+        name: ${APP_NAME}-step-network
         driver: bridge
 volumes:
     step:
@@ -17,6 +20,9 @@ volumes:
         driver: local
     mysql:
         name: ${APP_NAME}-mysql-volume
+        driver: local
+    redis:
+        name: ${APP_NAME}-redis-volume
         driver: local
 secrets:
     password:
@@ -64,6 +70,14 @@ services:
             - backend
         ports:
             - 3306
+    memory:
+        image: redis:alpine
+        volumes:
+            - redis:/data
+        networks:
+            - redis
+        ports:
+            - 6379
     php:
         build:
             context: ./php
@@ -72,11 +86,13 @@ services:
             - ./php/backend:/var/www/html
         networks:
             - backend
+            - redis
         ports:
             - 9000
         depends_on:
             - db
-    backend:
+            - memory
+    laravel:
         build:
             context: ./node
         image: ${APP_NAME}/node
@@ -135,6 +151,24 @@ services:
         depends_on:
             - certwatch
             - php
+    websocket:
+        build:
+            context: ./node
+        image: ${APP_NAME}/node
+        working_dir: /websocket
+        volumes:
+            - step:/home/step:ro
+            - ./node/websocket:/websocket
+        command: ['node', 'socket.js']
+        networks:
+            - redis
+            - dev
+            - local
+        ports:
+            - 80
+        depends_on:
+            - certwatch
+            - memory
     app-www:
         build:
             context: ./nginx
@@ -167,11 +201,12 @@ services:
             - 80:80
             - 443:443
         depends_on:
-            - app-www
-            - php-www
             - certwatch
+            - laravel
+            - php-www
             - app
-            - backend
+            - app-www
+            - websocket
     www:
         build:
             context: ./nginx
@@ -188,5 +223,6 @@ services:
             - 443:443
         depends_on:
             - certwatch
-            - app-www
             - php-www
+            - app-www
+            - websocket
