@@ -70,7 +70,7 @@ services:
             - backend
         ports:
             - 3306
-    memory:
+    redis:
         image: redis:alpine
         volumes:
             - redis:/data
@@ -91,16 +91,16 @@ services:
             - 9000
         depends_on:
             - db
-            - memory
+            - redis
     laravel:
         build:
             context: ./node
         image: ${APP_NAME}/node
         environment:
-            - VITE_SERVER_HMR=${DEV_SERVER_LARAVEL_HMR}
-            - VITE_SERVER_KEY=${DEV_SERVER_KEY}
-            - VITE_SERVER_CERT=${DEV_SERVER_CERT}
-            - VITE_SERVER_CERTPATH=../../..${DEV_SERVER_CERT}
+            - VITE_SERVER_HMR=${APP_NAME}.test
+            - VITE_SERVER_KEY=${CERTWATCH_PATH}/site.key
+            - VITE_SERVER_CERT=${CERTWATCH_PATH}/site.crt
+            - VITE_SERVER_CERTPATH=../../..${CERTWATCH_PATH}/site.crt
         working_dir: /var/www/html
         volumes:
             - step:/home/step:ro
@@ -109,7 +109,7 @@ services:
         networks:
             - dev
         ports:
-            - 443
+            - 5173
         depends_on:
             - certwatch
             - php
@@ -136,9 +136,9 @@ services:
             context: ./node
         image: ${APP_NAME}/node
         environment:
-            - VITE_SERVER_KEY=${DEV_SERVER_KEY}
-            - VITE_SERVER_CERT=${DEV_SERVER_CERT}
-            - VITE_SERVER_CERTPATH=../../../..${DEV_SERVER_CERT}
+            - VITE_SERVER_KEY=${CERTWATCH_PATH}/site.key
+            - VITE_SERVER_CERT=${CERTWATCH_PATH}/site.crt
+            - VITE_SERVER_CERTPATH=../../../..${CERTWATCH_PATH}/site.crt
         working_dir: /usr/share/nginx/html
         volumes:
             - step:/home/step:ro
@@ -147,7 +147,7 @@ services:
         networks:
             - dev
         ports:
-            - 443
+            - 5173
         depends_on:
             - certwatch
             - php
@@ -155,6 +155,9 @@ services:
         build:
             context: ./node
         image: ${APP_NAME}/node
+        environment:
+            - WS_SERVER_KEY=${CERTWATCH_PATH}/site.key
+            - WS_SERVER_CERT=${CERTWATCH_PATH}/site.crt
         working_dir: /websocket
         volumes:
             - step:/home/step:ro
@@ -165,10 +168,10 @@ services:
             - dev
             - local
         ports:
-            - 80
+            - 3000
         depends_on:
             - certwatch
-            - memory
+            - redis
     app-www:
         build:
             context: ./nginx
