@@ -49,7 +49,7 @@ authority: {
 
 ## IMPORTANT
 
-On new repository from template, modules need to be created from templates too.
+On a new repository from this template, modules need to be created from their respective templates too.
 
 TO-DO: find out if I can create this recursively.
 
