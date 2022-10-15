@@ -1,14 +1,22 @@
 # IMPORTANT
 
-### Submodules (laravel-api/vuejs-app)
+### Submodules (laravel-backend/vuejs-app)
 
-currently this package is working with two submodules, both of them are templates aswell. Upon creation of a new docker-web-core template project, a laravel-api and vuejs-app have to be created as well. vuejs-app template not only serves as the main (obligatory) template but as the template to any other subdomain (vuejs-app submodule).
+currently this package is working with three template submodules. Upon creation of a new docker-core template 
+project, a project-backend and project-app have to be created from respective laravel-backend and vuejs-app templates. vuejs-app 
+template does not serve only as a main, required template but work too for any subsequencial app needed overtime (or new vuejs-app submodule).
 
 ## Smallstep (step)
 
 ### config
 
-Configuration is included so that user has an example. Whole contents of the step/ca can be removed and re-created upon creating step-ca service. By default if no configuration is present, terminal will immediately prompt for new config input. Service name must be the url, and later on some extra configuration is needed as to not auto-generate a new certificate each minute.
+Configuration is no longer included. Upon clean install first thing that needs to be run is.
+
+```
+step ca init // inside ca docker service
+```
+
+This can also be set with env variables on the ca service. //TO-DO
 
 ```
 \\ defaults.json
