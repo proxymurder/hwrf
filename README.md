@@ -55,7 +55,7 @@ TO-DO: find out if I can create this recursively.
 
 ## Submodules
 
-### [Laravel Backend](php)
+### [Laravel Backend](php/backend/)
 
 currently this package is working with three template submodules. Upon creation of a new docker-core template
 project, a project-backend and project-app have to be created from respective laravel-backend and vuejs-app templates. vuejs-app
