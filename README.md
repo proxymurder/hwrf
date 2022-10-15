@@ -55,14 +55,18 @@ TO-DO: find out if I can create this recursively.
 
 ## Submodules
 
-### [Laravel Backend](https://github.com/proxymurder/laravel-backend)
+## [Php](php)
+
+#### [Laravel Backend](https://github.com/proxymurder/laravel-backend)
 
 Laravel backend submodule contains API endpoints, and a complete OAuth Server implementation.
 
-### [Vue Js App](https://github.com/proxymurder/vuejs-app)
+## [Node](node)
 
-Vue js app submodule for a static client side rendered single page application.
+#### [Vue Js App](https://github.com/proxymurder/vuejs-app)
 
-### [Node Js Websocket](https://github.com/proxymurder/websocket)
+Vue js app submodule for a static client side rendered single page application (SPA).
 
-Node js websocket submodule to connect Redis server, Laravel backend events and display them in Vue js submodules.
+#### [Node Js Websocket](https://github.com/proxymurder/websocket)
+
+Node js websocket submodule to connect Redis server, Laravel broadcast/cache and display them in Vue js submodules.
