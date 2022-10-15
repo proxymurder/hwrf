@@ -57,6 +57,12 @@ TO-DO: find out if I can create this recursively.
 
 ### [Laravel Backend](php/backend/)
 
+### [Laravel Backend 2](https://github.com/proxymurder/laravel-backend/tree/6ba45bb91a926c8fe8715e6bd6f414b842930e2b)
+
+### [Laravel Backend 3](php/backend/6ba45bb91a926c8fe8715e6bd6f414b842930e2b)
+
+### [Laravel Backend 4](php/backend@6ba45bb91a926c8fe8715e6bd6f414b842930e2b)
+
 currently this package is working with three template submodules. Upon creation of a new docker-core template
 project, a project-backend and project-app have to be created from respective laravel-backend and vuejs-app templates. vuejs-app
 template does not serve only as a main, required template but work too for any subsequencial app needed overtime (or new vuejs-app submodule).
