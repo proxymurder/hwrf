@@ -55,30 +55,14 @@ TO-DO: find out if I can create this recursively.
 
 ## Submodules
 
-### [Laravel Backend](php/backend/)
+### [Laravel Backend](https://github.com/proxymurder/laravel-backend)
 
-### [Laravel Backend 2](https://github.com/proxymurder/laravel-backend/tree/6ba45bb91a926c8fe8715e6bd6f414b842930e2b)
+Laravel backend submodule contains API endpoints, and a complete OAuth Server implementation.
 
-### [Laravel Backend 3](php/backend/6ba45bb91a926c8fe8715e6bd6f414b842930e2b)
+### [Vue Js App](https://github.com/proxymurder/vuejs-app)
 
-### [Laravel Backend 4](php/backend@6ba45bb91a926c8fe8715e6bd6f414b842930e2b)
+Vue js app submodule for a static client side rendered single page application.
 
-currently this package is working with three template submodules. Upon creation of a new docker-core template
-project, a project-backend and project-app have to be created from respective laravel-backend and vuejs-app templates. vuejs-app
-template does not serve only as a main, required template but work too for any subsequencial app needed overtime (or new vuejs-app submodule).
+### [Node Js Websocket](https://github.com/proxymurder/websocket)
 
-### Vue Js App (@https://github.com/proxymurder/vuejs-app.git)
-
-currently this package is working with three template submodules. Upon creation of a new docker-core template
-project, a project-backend and project-app have to be created from respective laravel-backend and vuejs-app templates. vuejs-app
-template does not serve only as a main, required template but work too for any subsequencial app needed overtime (or new vuejs-app submodule).
-
-### Node Js Websocket (@https://github.com/proxymurder/websocket.git)
-
-currently this package is working with three template submodules. Upon creation of a new docker-core template
-project, a project-backend and project-app have to be created from respective laravel-backend and vuejs-app templates. vuejs-app
-template does not serve only as a main, required template but work too for any subsequencial app needed overtime (or new vuejs-app submodule).
-
-```
-
-```
+Node js websocket submodule to connect Redis server, Laravel backend events and display them in Vue js submodules.
