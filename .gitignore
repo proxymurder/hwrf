@@ -1,5 +1,3 @@
-/step/ca/certs
-/step/ca/db
-/step/ca/secrets
+/step/ca
 /step/tmp
 .env
