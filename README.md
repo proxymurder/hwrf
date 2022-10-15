@@ -1,4 +1,4 @@
-## Smallstep (step)
+# Smallstep (step)
 
 ## Certificate Authority (CA)
 
@@ -47,7 +47,7 @@ authority: {
 
 ```
 
-## IMPORTANT
+# IMPORTANT
 
 On a new repository from this template, modules need to be created from their respective templates too.
 
@@ -57,16 +57,16 @@ TO-DO: find out if I can create this recursively.
 
 ## [Php](php)
 
-#### [Laravel Backend](https://github.com/proxymurder/laravel-backend)
+### [Laravel Backend](https://github.com/proxymurder/laravel-backend)
 
 Laravel backend submodule contains API endpoints, and a complete OAuth Server implementation.
 
 ## [Node](node)
 
-#### [Vue Js App](https://github.com/proxymurder/vuejs-app)
+### [Vue Js App](https://github.com/proxymurder/vuejs-app)
 
 Vue js app submodule for a static client side rendered single page application (SPA).
 
-#### [Node Js Websocket](https://github.com/proxymurder/websocket)
+### [Node Js Websocket](https://github.com/proxymurder/websocket)
 
 Node js websocket submodule to connect Redis server, Laravel broadcast/cache and display them in Vue js submodules.
