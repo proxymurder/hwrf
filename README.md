@@ -1,11 +1,3 @@
-# IMPORTANT
-
-### Submodules (laravel-backend/vuejs-app)
-
-currently this package is working with three template submodules. Upon creation of a new docker-core template 
-project, a project-backend and project-app have to be created from respective laravel-backend and vuejs-app templates. vuejs-app 
-template does not serve only as a main, required template but work too for any subsequencial app needed overtime (or new vuejs-app submodule).
-
 ## Smallstep (step)
 
 ### config
@@ -38,3 +30,11 @@ This can also be set with env variables on the ca service. //TO-DO
     "disableRenewal": false
 } \\ not included in default configuration
 ```
+
+# IMPORTANT
+
+### Submodules (laravel-backend/vuejs-app)
+
+currently this package is working with three template submodules. Upon creation of a new docker-core template
+project, a project-backend and project-app have to be created from respective laravel-backend and vuejs-app templates. vuejs-app
+template does not serve only as a main, required template but work too for any subsequencial app needed overtime (or new vuejs-app submodule).
