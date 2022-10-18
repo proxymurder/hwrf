@@ -1,6 +1,6 @@
 # IMPORTANT
 
-On a new repository from this template, modules need to be created from their respective templates too.
+When creating a new repository from this template, submodules need to be created from their respective templates too.
 
 TO-DO: find out if I can create this recursively.
 
@@ -16,7 +16,7 @@ Laravel backend submodule contains API endpoints, and a complete OAuth Server im
 
 ### [Vue Js App](https://github.com/proxymurder/vuejs-app)
 
-Vue js app submodule for a static client side rendered single page application (SPA).
+Vue js app submodule for a static client side rendered web application.
 
 ### [Node Js Websocket](https://github.com/proxymurder/websocket)
 
@@ -37,11 +37,11 @@ docker compose run --rm ca step ca init
 default variables are set to be:
 
 ```
-Deployment: Standalone          // to-do: Reserch deployment types.
-PKI name:   ca                  // ca.json
-DNS names:  ['certauth']        // https://certauth
-CA Address: 5739                // 127.0.0.1:5739
-Provisoner: example@email.com   // to-do: Reserch user/team
+Deployment: Standalone
+PKI name:   ca
+DNS names:  ['certauth']
+CA Address: 5739
+Provisoner: example@email.com
 Password:   secret
 ```
 
