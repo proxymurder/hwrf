@@ -26,19 +26,19 @@ volumes:
         driver: local
 secrets:
     password:
-        file: ./step/ca/secrets/password
+        file: ./step/certauth/secrets/password
 services:
-    ca:
+    certauth:
         image: smallstep/step-ca
         volumes:
-            - ./step/ca:/home/step
+            - ./step/certauth:/home/step
         networks:
             - step
         ports:
-            - 443
+            - 5739
     certwatch:
         build:
-            context: ./step/watch
+            context: ./step/certwatch
         image: ${APP_NAME}/step-cli
         environment:
             COMMON_NAME: ${CERTWATCH_NAME}
@@ -57,7 +57,7 @@ services:
         networks:
             - step
         depends_on:
-            - ca
+            - certauth
     db:
         image: mysql:latest
         environment:
