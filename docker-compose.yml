@@ -39,16 +39,16 @@ services:
     certwatch:
         build:
             context: ./step/certwatch
-        image: ${APP_NAME}/step-cli
+        image: proxymurder/step-cli
         environment:
-            COMMON_NAME: ${CERTWATCH_NAME}
-            DOMAINS: ${CERTWATCH_DOMAINS}
-            STEPPATH: ${CERTWATCH_PATH}
-            STEP_CA_URL: ${CERTWATCH_URL}
-            STEP_FINGERPRINT: ${CERTWATCH_FINGERPRINT}
-            STEP_KID: ${CERTWATCH_KID}
-            STEP_PASSWORD_FILE: ${CERTWATCH_PASSWORD_FILE}
-            STEP_ROOT: ${CERTWATCH_ROOT}
+            COMMON_NAME: ${CERTS_NAME}
+            DOMAINS: ${CERTS_DOMAINS}
+            STEPPATH: ${CERTS_PATH}
+            STEP_CA_URL: ${CERTS_URL}
+            STEP_FINGERPRINT: ${CERTS_FINGERPRINT}
+            STEP_KID: ${CERTS_KID}
+            STEP_PASSWORD_FILE: /run/secrets/password
+            STEP_ROOT: /home/step/root_ca.crt
         volumes:
             - step:/home/step
             - ./step/tmp:/var/local/step
@@ -81,7 +81,7 @@ services:
     php:
         build:
             context: ./php
-        image: ${APP_NAME}/php
+        image: proxymurder/php
         volumes:
             - ./php/backend:/var/www/html
         networks:
@@ -95,12 +95,12 @@ services:
     laravel:
         build:
             context: ./node
-        image: ${APP_NAME}/node
+        image: proxymurder/node
         environment:
-            - VITE_SERVER_HMR=${APP_NAME}.test
-            - VITE_SERVER_KEY=${CERTWATCH_PATH}/site.key
-            - VITE_SERVER_CERT=${CERTWATCH_PATH}/site.crt
-            - VITE_SERVER_CERTPATH=../../..${CERTWATCH_PATH}/site.crt
+            - VITE_SERVER_HMR=${DEV_SERVER_LARAVEL_HMR}
+            - VITE_SERVER_KEY=${DEV_SERVER_KEY}
+            - VITE_SERVER_CERT=${DEV_SERVER_CERT}
+            - VITE_SERVER_CERTPATH=../../..${CERTS_PATH}
         working_dir: /var/www/html
         volumes:
             - step:/home/step:ro
@@ -116,7 +116,7 @@ services:
     php-www:
         build:
             context: ./nginx
-        image: ${APP_NAME}/nginx
+        image: proxymurder/nginx
         volumes:
             - step:/home/step:ro
             - ./php/backend:/var/www/html
@@ -134,11 +134,11 @@ services:
     app:
         build:
             context: ./node
-        image: ${APP_NAME}/node
+        image: proxymurder/node
         environment:
-            - VITE_SERVER_KEY=${CERTWATCH_PATH}/site.key
-            - VITE_SERVER_CERT=${CERTWATCH_PATH}/site.crt
-            - VITE_SERVER_CERTPATH=../../../..${CERTWATCH_PATH}/site.crt
+            - VITE_SERVER_KEY=${DEV_SERVER_KEY}
+            - VITE_SERVER_CERT=${DEV_SERVER_CERT}
+            - VITE_SERVER_CERTPATH=../../..${CERTS_PATH}
         working_dir: /usr/share/nginx/html
         volumes:
             - step:/home/step:ro
@@ -151,31 +151,10 @@ services:
         depends_on:
             - certwatch
             - php
-    websocket:
-        build:
-            context: ./node
-        image: ${APP_NAME}/node
-        environment:
-            - WS_SERVER_KEY=${CERTWATCH_PATH}/site.key
-            - WS_SERVER_CERT=${CERTWATCH_PATH}/site.crt
-        working_dir: /websocket
-        volumes:
-            - step:/home/step:ro
-            - ./node/websocket:/websocket
-        command: ['node', 'socket.js']
-        networks:
-            - redis
-            - dev
-            - local
-        ports:
-            - 3000
-        depends_on:
-            - certwatch
-            - redis
     app-www:
         build:
             context: ./nginx
-        image: ${APP_NAME}/nginx
+        image: proxymurder/nginx
         volumes:
             - step:/home/step:ro
             - ./node/app:/usr/share/nginx/html
@@ -189,10 +168,31 @@ services:
         depends_on:
             - certwatch
             - php
+    socket:
+        build:
+            context: ./node
+        image: proxymurder/node
+        environment:
+            - WS_SERVER_KEY=${DEV_SERVER_KEY}
+            - WS_SERVER_CERT=${DEV_SERVER_CERT}
+        working_dir: /socket
+        volumes:
+            - step:/home/step:ro
+            - ./node/socket:/socket
+        command: ['node', 'server.js']
+        networks:
+            - redis
+            - dev
+            - local
+        ports:
+            - 5555
+        depends_on:
+            - certwatch
+            - redis
     dev:
         build:
             context: ./nginx
-        image: ${APP_NAME}/nginx
+        image: proxymurder/nginx
         volumes:
             - step:/home/step:ro
             - ./nginx/conf.d/proxy/dev:/etc/nginx/conf.d
@@ -209,11 +209,11 @@ services:
             - php-www
             - app
             - app-www
-            - websocket
+            - socket
     www:
         build:
             context: ./nginx
-        image: ${APP_NAME}/nginx
+        image: proxymurder/nginx
         volumes:
             - step:/home/step:ro
             - ./nginx/conf.d/proxy/prod:/etc/nginx/conf.d
@@ -228,4 +228,4 @@ services:
             - certwatch
             - php-www
             - app-www
-            - websocket
+            - socket

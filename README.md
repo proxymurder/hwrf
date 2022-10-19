@@ -31,7 +31,7 @@ Node js websocket submodule to connect Redis server, Laravel broadcast/cache and
 SmallStep CA is linked to step/ca folder. On clen install run:
 
 ```
-docker compose run --rm ca step ca init
+docker compose run --rm certauth step ca init
 ```
 
 default variables are set to be:
@@ -42,13 +42,13 @@ PKI name:   ca
 DNS names:  ['certauth']
 CA Address: 5739
 Provisoner: example@email.com
-Password:   secret
+Password:   *password*
 ```
 
-password file needs to be created on the step/ca/secrets folder:
+password file needs to be created on the step/certauth/secrets folder:
 
 ```
-printf "%s\n" "secret" > step/ca/secrets
+printf "%s\n" "secret" > step/certauth/secrets/password
 ```
 
 Add the "authority.claims" property inside PKI config (ca.json).
