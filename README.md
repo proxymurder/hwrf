@@ -4,6 +4,24 @@ When creating a new repository from this template, submodules need to be created
 
 TO-DO: find out if I can create this recursively.
 
+# Docker
+
+## Build
+
+Most of the Docker services contain their own Dockerfile, and must be built before hand.
+This comes in handy when it is time to install node modules, composer packages... for example.
+Redis, Smallstep Certificate Authority, mySQL and some services use a default Image or have not yet been configured for custom usage.
+
+```
+docker compose build
+```
+
+Copy .env.example to .env
+
+```
+cp .env.example .env
+```
+
 ## Submodules
 
 ## [Php](php)
