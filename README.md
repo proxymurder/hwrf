@@ -23,12 +23,16 @@ cp .env.example .env
 
 This comes in handy when it is time to install, for example; node modules or composer packages:
 
+i.e backend dependencies
+
 ```
-// backend dependencies
 docker compose run --rm php composer install
 docker compose run --rm laravel npm install
+```
 
-// frontend dependencies
+i.e frontend dependencies
+
+```
 docker compose run --rm app npm install
 ```
 
