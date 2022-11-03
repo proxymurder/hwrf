@@ -9,6 +9,18 @@ TO-DO: find out if I can create this recursively.
 ## Build
 
 Most Docker services have their own Dockerfile, and must be built before hand.
+Build images using docker compose:
+
+```
+docker compose build
+```
+
+Copy .env.example to .env
+
+```
+cp .env.example .env
+```
+
 This comes in handy when it is time to install, for example; node modules or composer packages:
 
 ```
@@ -21,16 +33,6 @@ docker compose run --rm app npm install
 ```
 
 Redis, Smallstep Certificate Authority, mySQL and some services use a default Image or have not yet been configured for custom usage.
-
-```
-docker compose build
-```
-
-Copy .env.example to .env
-
-```
-cp .env.example .env
-```
 
 ## Submodules
 
