@@ -8,8 +8,18 @@ TO-DO: find out if I can create this recursively.
 
 ## Build
 
-Most of the Docker services contain their own Dockerfile, and must be built before hand.
-This comes in handy when it is time to install node modules, composer packages... for example.
+Most Docker services have their own Dockerfile, and must be built before hand.
+This comes in handy when it is time to install, for example; node modules or composer packages:
+
+```
+// backend dependencies
+docker compose run --rm php composer install
+docker compose run --rm laravel npm install
+
+// frontend dependencies
+docker compose run --rm app npm install
+```
+
 Redis, Smallstep Certificate Authority, mySQL and some services use a default Image or have not yet been configured for custom usage.
 
 ```
