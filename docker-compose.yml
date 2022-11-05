@@ -1,18 +1,18 @@
 networks:
-    backend:
-        name: ${APP_NAME}-backend-network
-        driver: bridge
-    dev:
-        name: ${APP_NAME}-dev-network
-        driver: bridge
-    local:
-        name: ${APP_NAME}-local-network
+    step:
+        name: ${APP_NAME}-step-network
         driver: bridge
     redis:
         name: ${APP_NAME}-redis-network
         driver: bridge
-    step:
-        name: ${APP_NAME}-step-network
+    backend:
+        name: ${APP_NAME}-backend-network
+        driver: bridge
+    local:
+        name: ${APP_NAME}-local-network
+        driver: bridge
+    www:
+        name: ${APP_NAME}-www-network
         driver: bridge
 volumes:
     step:
@@ -39,7 +39,7 @@ services:
     certwatch:
         build:
             context: ./step/certwatch
-        image: proxymurder/step-cli
+        image: proxymurder/certwatch
         environment:
             COMMON_NAME: ${CERTS_NAME}
             DOMAINS: ${CERTS_DOMAINS}
@@ -80,10 +80,11 @@ services:
             - 6379
     php:
         build:
-            context: ./php
+            context: ./laravel-backend
+            dockerfile: php.Dockerfile
         image: proxymurder/php
         volumes:
-            - ./php/backend:/var/www/html
+            - ./laravel-backend:/backend
         networks:
             - backend
             - redis
@@ -92,124 +93,118 @@ services:
         depends_on:
             - db
             - memory
-    laravel:
+    ssr:
         build:
-            context: ./node
-        image: proxymurder/node
+            context: ./laravel-backend
+            dockerfile: node.Dockerfile
+        image: proxymurder/ssr
         environment:
             - VITE_SERVER_HMR=${DEV_SERVER_LARAVEL_HMR}
             - VITE_SERVER_KEY=${DEV_SERVER_KEY}
             - VITE_SERVER_CERT=${DEV_SERVER_CERT}
             - VITE_SERVER_CERTPATH=../../..${CERTS_PATH}
-        working_dir: /var/www/html
         volumes:
             - step:/home/step:ro
-            - ./php/backend:/var/www/html
-        command: ['npm', 'run', 'dev']
+            - ./laravel-backend:/backend
         networks:
-            - dev
+            - local
         ports:
             - 5173
         depends_on:
             - certwatch
             - php
-    php-www:
+    backend:
         build:
             context: ./nginx
         image: proxymurder/nginx
         volumes:
             - step:/home/step:ro
-            - ./php/backend:/var/www/html
-            - ./nginx/conf.d/php:/etc/nginx/conf.d
-            - ./nginx/extra/https.conf:/etc/nginx/extra/https.conf
+            - ./laravel-backend:/backend
+            - ./nginx/backend:/etc/nginx/conf.d
         networks:
             - backend
-            - dev
             - local
+            - www
         ports:
-            - 443
+            - 6000
         depends_on:
             - certwatch
             - php
     app:
         build:
-            context: ./node
-        image: proxymurder/node
+            context: ./vuejs-app
+        image: proxymurder/app
         environment:
             - VITE_SERVER_KEY=${DEV_SERVER_KEY}
             - VITE_SERVER_CERT=${DEV_SERVER_CERT}
             - VITE_SERVER_CERTPATH=../../..${CERTS_PATH}
-        working_dir: /usr/share/nginx/html
         volumes:
             - step:/home/step:ro
-            - ./node/app:/usr/share/nginx/html
-        command: ['npm', 'run', 'dev']
+            - ./vuejs-app:/app
         networks:
-            - dev
+            - local
         ports:
             - 5173
         depends_on:
             - certwatch
             - php
-    app-www:
+    frontend:
         build:
             context: ./nginx
         image: proxymurder/nginx
         volumes:
             - step:/home/step:ro
-            - ./node/app:/usr/share/nginx/html
-            - ./nginx/conf.d/node:/etc/nginx/conf.d
-            - ./nginx/extra/https.conf:/etc/nginx/extra/https.conf
+            - ./vuejs-app:/app
+            - ./nginx/frontend:/etc/nginx/conf.d
         networks:
             - local
-            - dev
+            - www
         ports:
-            - 443
+            - 3000
         depends_on:
             - certwatch
             - php
     sockjs:
         build:
-            context: ./node
-        image: proxymurder/node
+            context: ./sockjs
+            target: sockjs
+        image: proxymurder/sockjs
         environment:
             - WS_SERVER_KEY=${DEV_SERVER_KEY}
             - WS_SERVER_CERT=${DEV_SERVER_CERT}
-            - REDIS_URL=memory:6379
-        working_dir: /sockjs
+            - WS_PORT=5000
+            - REDIS_HOST=memory
+            - REDIS_PORT=6379
         volumes:
             - step:/home/step:ro
-            - ./node/sockjs:/sockjs
-        command: ['node', 'server.js']
+            - ./sockjs:/sockjs
         networks:
             - redis
-            - dev
             - local
+            - www
         ports:
-            - 5555
+            - 5000
         depends_on:
             - certwatch
             - memory
-    dev:
+    local:
         build:
             context: ./nginx
         image: proxymurder/nginx
         volumes:
             - step:/home/step:ro
-            - ./nginx/conf.d/proxy/dev:/etc/nginx/conf.d
-            - ./nginx/extra/https.conf:/etc/nginx/extra/https.conf
-            - ./nginx/extra/proxy.conf:/etc/nginx/extra/proxy.conf
+            - ./nginx/local:/etc/nginx/conf.d
         networks:
-            - dev
+            - local
         ports:
             - 80:80
             - 443:443
         depends_on:
             - certwatch
-            - laravel
-            - php-www
+            - ssr
+            - backend
             - app
-            - app-www
+            - frontend
             - sockjs
     www:
         build:
@@ -217,16 +212,14 @@ services:
         image: proxymurder/nginx
         volumes:
             - step:/home/step:ro
-            - ./nginx/conf.d/proxy/prod:/etc/nginx/conf.d
-            - ./nginx/extra/https.conf:/etc/nginx/extra/https.conf
-            - ./nginx/extra/proxy.conf:/etc/nginx/extra/proxy.conf
+            - ./nginx/www:/etc/nginx/conf.d
         networks:
-            - local
+            - www
         ports:
             - 80:80
             - 443:443
         depends_on:
             - certwatch
-            - php-www
-            - app-www
+            - backend
+            - frontend
             - sockjs

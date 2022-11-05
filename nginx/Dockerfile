@@ -12,6 +12,10 @@ COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /certwatch.sh
 RUN chmod +x /entrypoint.sh
 
+# Copy ngnix conf files
+COPY ./https.conf /etc/nginx/https.conf
+COPY ./proxy.conf /etc/nginx/proxy.conf
+
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Start nginx service

@@ -1,9 +1,9 @@
-[submodule "php/backend"]
-	path = php/backend
+[submodule "laravel-backend"]
+	path = laravel-backend
 	url = https://github.com/proxymurder/laravel-backend.git
-[submodule "node/app"]
-	path = node/app
+[submodule "vuejs-app"]
+	path = vuejs-app
 	url = https://github.com/proxymurder/vuejs-app.git
-[submodule "node/sockjs"]
-	path = node/sockjs
+[submodule "sockjs"]
+	path = sockjs
 	url = https://github.com/proxymurder/sockjs.git

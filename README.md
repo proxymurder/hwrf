@@ -42,7 +42,7 @@ Php files are being executed with `php-fpm` through `php` docker service, and se
 Laravel backend depends on the mySQL `db` service and Redis `memory` service.
 Vite server is available for development environement through the `laravel` service.
 
-to install backend dependencies run:
+To install backend dependencies run:
 
 ```
 docker compose run --rm php composer instal
