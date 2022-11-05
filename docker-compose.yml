@@ -70,7 +70,7 @@ services:
             - backend
         ports:
             - 3306
-    redis:
+    memory:
         image: redis:alpine
         volumes:
             - redis:/data
@@ -91,7 +91,7 @@ services:
             - 9000
         depends_on:
             - db
-            - redis
+            - memory
     laravel:
         build:
             context: ./node
@@ -168,17 +168,18 @@ services:
         depends_on:
             - certwatch
             - php
-    socket:
+    sockjs:
         build:
             context: ./node
         image: proxymurder/node
         environment:
             - WS_SERVER_KEY=${DEV_SERVER_KEY}
             - WS_SERVER_CERT=${DEV_SERVER_CERT}
-        working_dir: /socket
+            - REDIS_URL=memory:6379
+        working_dir: /sockjs
         volumes:
             - step:/home/step:ro
-            - ./node/socket:/socket
+            - ./node/sockjs:/sockjs
         command: ['node', 'server.js']
         networks:
             - redis
@@ -188,7 +189,7 @@ services:
             - 5555
         depends_on:
             - certwatch
-            - redis
+            - memory
     dev:
         build:
             context: ./nginx
@@ -209,7 +210,7 @@ services:
             - php-www
             - app
             - app-www
-            - socket
+            - sockjs
     www:
         build:
             context: ./nginx
@@ -228,4 +229,4 @@ services:
             - certwatch
             - php-www
             - app-www
-            - socket
+            - sockjs

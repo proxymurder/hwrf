@@ -23,13 +23,6 @@ cp .env.example .env
 
 This comes in handy when it is time to install, for example; node modules or composer packages:
 
-i.e backend dependencies
-
-```
-docker compose run --rm php composer install
-docker compose run --rm laravel npm install
-```
-
 i.e frontend dependencies
 
 ```
@@ -45,6 +38,19 @@ Redis, Smallstep Certificate Authority, mySQL and some services use a default Im
 ### [Laravel Backend](https://github.com/proxymurder/laravel-backend)
 
 Laravel backend submodule contains API endpoints, and a complete OAuth Server implementation.
+Php files are being executed with `php-fpm` through `php` docker service, and served with nginx `www-php` service.
+Laravel backend depends on the mySQL `db` service and Redis `memory` service.
+Vite server is available for development environement through the `laravel` service.
+
+to install backend dependencies run:
+
+```
+docker compose run --rm php composer instal
+```
+
+```
+docker compose run --rm laravel npm install
+```
 
 ## [Node](node)
 
@@ -92,13 +98,13 @@ Default TLSCertDurations are 60s.
 \\ ca.json
 
 authority: {
-    provisioners:[...],
     "claims":{
     "minTLSCertDuration": "22h",
     "maxTLSCertDuration": "8800h",
     "defaultTLSCertDuration": "4400h",
     "disableRenewal": false
     },
+    provisioners:[...],
 }
 ```
 
