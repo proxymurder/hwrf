@@ -1,9 +1,18 @@
-[submodule "laravel-backend"]
-	path = laravel-backend
-	url = https://github.com/proxymurder/laravel-backend.git
-[submodule "vuejs-app"]
-	path = vuejs-app
-	url = https://github.com/proxymurder/vuejs-app.git
-[submodule "sockjs"]
-	path = sockjs
-	url = https://github.com/proxymurder/sockjs.git
+[submodule "ca"]
+	path = ca
+	url = https://github.com/proxymurder/docker-smallstep-ca.git
+[submodule "laravel"]
+	path = laravel
+	url = https://github.com/proxymurder/docker-laravel.git
+[submodule "nginx"]
+	path = nginx
+	url = https://github.com/proxymurder/docker-nginx.git
+[submodule "renewer"]
+	path = renewer
+	url = https://github.com/proxymurder/docker-smallstep-renewer.git
+[submodule "vue"]
+	path = vue
+	url = https://github.com/proxymurder/docker-vue.git
+[submodule "websockets"]
+	path = websockets
+	url = https://github.com/proxymurder/docker-websockets.git

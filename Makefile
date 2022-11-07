@@ -1,23 +1,23 @@
-all: build
+all: build local
 
-build: build-certwatch build-php build-ssr build-app build-sockjs build-nginx
+build: certwatch-image php-image ssr-image app-image sockjs-image nginx-image
 
-build-certwatch:
+certwatch-image:
 	docker build -t proxymurder/certwatch:latest ./step/certwatch
-build-php:
+php-image:
 	docker build -t proxymurder/php:latest --target php ./laravel-backend
-build-ssr:
+ssr-image:
 	docker build -t proxymurder/ssr:latest --target ssr ./laravel-backend
-build-app:
+app-image:
 	docker build -t proxymurder/app:latest ./vuejs-app
-build-sockjs:
+sockjs-image:
 	docker build -t proxymurder/sockjs:latest ./sockjs 
-build-nginx:
+nginx-image:
 	docker build -t proxymurder/nginx:latest ./nginx 
 
 local:
-	dockerc up -d local
+	docker compose up -d local
 www:
-	dockerc up -d www
-down:
-	dockerc down
+	docker compose up -d www
+rollback:
+	docker compose down

@@ -1,5 +1,7 @@
 FROM nginx:alpine
 
+USER root
+
 # Install dependencies
 RUN apk update
 RUN apk add --no-cache \

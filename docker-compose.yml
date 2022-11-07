@@ -26,20 +26,18 @@ volumes:
         driver: local
 secrets:
     password:
-        file: ./step/certauth/secrets/password
+        file: ./ca/secrets/password
 services:
-    certauth:
+    ca:
         image: smallstep/step-ca
         volumes:
-            - ./step/certauth:/home/step
+            - ./ca:/home/step
         networks:
             - step
         ports:
             - 5739
-    certwatch:
-        build:
-            context: ./step/certwatch
-        image: proxymurder/certwatch
+    renewer:
+        image: proxymurder/renewer
         environment:
             COMMON_NAME: ${CERTS_NAME}
             DOMAINS: ${CERTS_DOMAINS}
@@ -51,13 +49,12 @@ services:
             STEP_ROOT: /home/step/root_ca.crt
         volumes:
             - step:/home/step
-            - ./step/tmp:/var/local/step
         secrets:
             - password
         networks:
             - step
         depends_on:
-            - certauth
+            - ca
     db:
         image: mysql:latest
         environment:
@@ -79,12 +76,9 @@ services:
         ports:
             - 6379
     php:
-        build:
-            context: ./laravel-backend
-            dockerfile: php.Dockerfile
         image: proxymurder/php
         volumes:
-            - ./laravel-backend:/backend
+            - ./laravel/src:/var/www/html
         networks:
             - backend
             - redis
@@ -93,11 +87,8 @@ services:
         depends_on:
             - db
             - memory
-    ssr:
-        build:
-            context: ./laravel-backend
-            dockerfile: node.Dockerfile
-        image: proxymurder/ssr
+    nphp:
+        image: proxymurder/nphp
         environment:
             - VITE_SERVER_HMR=${DEV_SERVER_LARAVEL_HMR}
             - VITE_SERVER_KEY=${DEV_SERVER_KEY}
@@ -105,21 +96,19 @@ services:
             - VITE_SERVER_CERTPATH=../../..${CERTS_PATH}
         volumes:
             - step:/home/step:ro
-            - ./laravel-backend:/backend
+            - ./laravel/src:/var/www/html
         networks:
             - local
         ports:
             - 5173
         depends_on:
-            - certwatch
+            - renewer
             - php
     backend:
-        build:
-            context: ./nginx
         image: proxymurder/nginx
         volumes:
             - step:/home/step:ro
-            - ./laravel-backend:/backend
+            - ./laravel/src:/var/www/html
             - ./nginx/backend:/etc/nginx/conf.d
         networks:
             - backend
@@ -128,11 +117,9 @@ services:
         ports:
             - 6000
         depends_on:
-            - certwatch
+            - renewer
             - php
     app:
-        build:
-            context: ./vuejs-app
         image: proxymurder/app
         environment:
             - VITE_SERVER_KEY=${DEV_SERVER_KEY}
@@ -140,21 +127,19 @@ services:
             - VITE_SERVER_CERTPATH=../../..${CERTS_PATH}
         volumes:
             - step:/home/step:ro
-            - ./vuejs-app:/app
+            - ./vue/app:/usr/share/nginx/html
         networks:
             - local
         ports:
             - 5173
         depends_on:
-            - certwatch
+            - renewer
             - php
     frontend:
-        build:
-            context: ./nginx
         image: proxymurder/nginx
         volumes:
             - step:/home/step:ro
-            - ./vuejs-app:/app
+            - ./vuejs-app:/usr/share/nginx/html
             - ./nginx/frontend:/etc/nginx/conf.d
         networks:
             - local
@@ -162,13 +147,10 @@ services:
         ports:
             - 3000
         depends_on:
-            - certwatch
+            - renewer
             - php
-    sockjs:
-        build:
-            context: ./sockjs
-            target: sockjs
-        image: proxymurder/sockjs
+    ws:
+        image: proxymurder/ws
         environment:
             - WS_SERVER_KEY=${DEV_SERVER_KEY}
             - WS_SERVER_CERT=${DEV_SERVER_CERT}
@@ -177,7 +159,7 @@ services:
             - REDIS_PORT=6379
         volumes:
             - step:/home/step:ro
-            - ./sockjs:/sockjs
+            - ./ws:/home/node/ws
         networks:
             - redis
             - local
@@ -185,11 +167,9 @@ services:
         ports:
             - 5000
         depends_on:
-            - certwatch
+            - renewer
             - memory
     local:
-        build:
-            context: ./nginx
         image: proxymurder/nginx
         volumes:
             - step:/home/step:ro
@@ -200,15 +180,13 @@ services:
             - 80:80
             - 443:443
         depends_on:
-            - certwatch
+            - renewer
             - ssr
             - backend
             - app
             - frontend
             - sockjs
     www:
-        build:
-            context: ./nginx
         image: proxymurder/nginx
         volumes:
             - step:/home/step:ro
@@ -219,7 +197,7 @@ services:
             - 80:80
             - 443:443
         depends_on:
-            - certwatch
+            - renewer
             - backend
             - frontend
             - sockjs
