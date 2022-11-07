@@ -4,9 +4,9 @@
 [submodule "laravel"]
 	path = laravel
 	url = https://github.com/proxymurder/docker-laravel.git
-# [submodule "nginx"]
-# 	path = nginx
-# 	url = https://github.com/proxymurder/docker-nginx.git
+[submodule "nginx"]
+	path = nginx
+	url = https://github.com/proxymurder/docker-nginx.git
 [submodule "renewer"]
 	path = renewer
 	url = https://github.com/proxymurder/docker-smallstep-renewer.git
