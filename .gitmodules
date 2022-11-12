@@ -1,18 +1,18 @@
-[submodule "ca"]
-	path = ca
-	url = https://github.com/proxymurder/docker-smallstep-ca.git
-[submodule "laravel"]
+[submodule "docker-smallstep-certificates"]
+	path = certificates
+	url = https://github.com/proxymurder/docker-smallstep-certificates.git
+[submodule "docker-laravel-template"]
 	path = laravel
-	url = https://github.com/proxymurder/docker-laravel.git
-[submodule "nginx"]
+	url = https://github.com/proxymurder/docker-laravel-template.git
+[submodule "docker-nginx"]
 	path = nginx
-	url = https://github.com/proxymurder/docker-nginx.git
-[submodule "renewer"]
+	url = https://github.com/proxymurder/docker-nginx-template.git
+[submodule "docker-smallstep-renewer"]
 	path = renewer
 	url = https://github.com/proxymurder/docker-smallstep-renewer.git
-[submodule "vue"]
+[submodule "docker-vue-template"]
 	path = vue
-	url = https://github.com/proxymurder/docker-vue.git
-[submodule "websockets"]
+	url = https://github.com/proxymurder/docker-vue-template.git
+[submodule "docker-websockets-template"]
 	path = websockets
-	url = https://github.com/proxymurder/docker-websockets.git
+	url = https://github.com/proxymurder/docker-websockets-template.git

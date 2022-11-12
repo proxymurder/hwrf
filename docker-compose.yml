@@ -29,15 +29,13 @@ secrets:
         file: ./ca/secrets/password
 services:
     ca:
-        image: smallstep/step-ca
-        volumes:
-            - ./ca:/home/step
+        image: proxymurder/ca:latest
         networks:
             - step
         ports:
             - 5739
     renewer:
-        image: proxymurder/renewer
+        image: proxymurder/renewer:latest
         environment:
             COMMON_NAME: ${CERTS_NAME}
             DOMAINS: ${CERTS_DOMAINS}
@@ -76,7 +74,7 @@ services:
         ports:
             - 6379
     php:
-        image: proxymurder/php
+        image: proxymurder/php:latest
         volumes:
             - ./laravel/src:/var/www/html
         networks:
@@ -88,7 +86,7 @@ services:
             - db
             - memory
     nphp:
-        image: proxymurder/nphp
+        image: proxymurder/nphp:latest
         environment:
             - VITE_SERVER_HMR=${DEV_SERVER_LARAVEL_HMR}
             - VITE_SERVER_KEY=${DEV_SERVER_KEY}
@@ -105,7 +103,7 @@ services:
             - renewer
             - php
     backend:
-        image: proxymurder/nginx
+        image: proxymurder/nginx:latest
         volumes:
             - step:/home/step:ro
             - ./laravel/src:/var/www/html
@@ -120,7 +118,7 @@ services:
             - renewer
             - php
     app:
-        image: proxymurder/app
+        image: proxymurder/app:latest
         environment:
             - VITE_SERVER_KEY=${DEV_SERVER_KEY}
             - VITE_SERVER_CERT=${DEV_SERVER_CERT}
@@ -136,7 +134,7 @@ services:
             - renewer
             - php
     frontend:
-        image: proxymurder/nginx
+        image: proxymurder/nginx:latest
         volumes:
             - step:/home/step:ro
             - ./vuejs-app:/usr/share/nginx/html
@@ -150,7 +148,7 @@ services:
             - renewer
             - php
     ws:
-        image: proxymurder/ws
+        image: proxymurder/websockets:latest
         environment:
             - WS_SERVER_KEY=${DEV_SERVER_KEY}
             - WS_SERVER_CERT=${DEV_SERVER_CERT}
@@ -170,7 +168,7 @@ services:
             - renewer
             - memory
     local:
-        image: proxymurder/nginx
+        image: proxymurder/nginx:latest
         volumes:
             - step:/home/step:ro
             - ./nginx/local:/etc/nginx/conf.d
@@ -181,13 +179,13 @@ services:
             - 443:443
         depends_on:
             - renewer
-            - ssr
+            - nphp
             - backend
             - app
             - frontend
-            - sockjs
+            - ws
     www:
-        image: proxymurder/nginx
+        image: proxymurder/nginx:latest
         volumes:
             - step:/home/step:ro
             - ./nginx/www:/etc/nginx/conf.d
@@ -200,4 +198,4 @@ services:
             - renewer
             - backend
             - frontend
-            - sockjs
+            - ws

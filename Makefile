@@ -1,18 +1,20 @@
 all: build local
 
-build: certwatch-image php-image ssr-image app-image sockjs-image nginx-image
+build: build-renewer build-php build-nphp build-frontend build-websockets build-nginx
 
-certwatch-image:
-	docker build -t proxymurder/certwatch:latest ./step/certwatch
-php-image:
-	docker build -t proxymurder/php:latest --target php ./laravel-backend
-ssr-image:
-	docker build -t proxymurder/ssr:latest --target ssr ./laravel-backend
-app-image:
-	docker build -t proxymurder/app:latest ./vuejs-app
-sockjs-image:
-	docker build -t proxymurder/sockjs:latest ./sockjs 
-nginx-image:
+build-ca:
+	docker build -t proxymurder/ca:latest ./ca
+build-renewer:
+	docker build -t proxymurder/renewer:latest ./renewer
+build-php:
+	docker build -t proxymurder/php:latest --target php ./laravel
+build-nphp:
+	docker build -t proxymurder/nphp:latest --target nphp ./laravel
+build-frontend:
+	docker build -t proxymurder/frontend:latest ./vue
+build-websockets:
+	docker build -t proxymurder/websockets:latest ./websockets
+build-nginx:
 	docker build -t proxymurder/nginx:latest ./nginx 
 
 local:
