@@ -29,13 +29,18 @@ secrets:
         file: ./ca/secrets/password
 services:
     ca:
-        image: proxymurder/ca:latest
+        image: proxymurder/ca:local
+        environment:
+            STEPCA_INIT_DNS: ca
+            STEPCA_INIT_PORT: 5739
+        volumes:
+            - ./step/ca:/home/step
         networks:
             - step
         ports:
             - 5739
     renewer:
-        image: proxymurder/renewer:latest
+        image: proxymurder/renewer:local
         environment:
             COMMON_NAME: ${CERTS_NAME}
             DOMAINS: ${CERTS_DOMAINS}

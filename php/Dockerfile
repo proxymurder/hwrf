@@ -55,7 +55,7 @@ WORKDIR /backend
 USER www
 
 # Vite server container
-FROM node:alpine as ssr
+FROM node:alpine as nphp
 
 USER root
 

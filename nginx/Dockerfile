@@ -9,16 +9,15 @@ RUN apk add --no-cache \
 
 # Install certwatch
 COPY ./certwatch.sh /certwatch.sh
-COPY ./entrypoint.sh /entrypoint.sh
+COPY ./docker-nginx-entrypoint /docker-nginx-entrypoint
 
-RUN chmod +x /certwatch.sh
-RUN chmod +x /entrypoint.sh
+RUN chmod +x /certwatch.sh /docker-nginx-entrypoint
 
-# Copy ngnix conf files
+# Install ngnix configuration files
 COPY ./https.conf /etc/nginx/https.conf
 COPY ./proxy.conf /etc/nginx/proxy.conf
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/docker-nginx-entrypoint"]
 
 # Start nginx service
 CMD ["nginx", "-g", "daemon off;"]

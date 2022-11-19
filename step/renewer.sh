@@ -1,4 +1,4 @@
-#!/bin/sh
-
+#! /bin/bash
 # Force renew certificates
+
 step ca renew --force /home/step/site.crt /home/step/site.key
