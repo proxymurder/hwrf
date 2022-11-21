@@ -1,5 +1,4 @@
-#! /bin/bash
-
+#!/bin/sh
 export STEPPATH=$(step path)
 
 # List of env vars required for step ca init

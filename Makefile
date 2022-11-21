@@ -6,7 +6,7 @@ build-local-step: build-local-ca build-local-renewer
 
 build-local-laravel: build-local-php build-local-nphp
 
-build-local-node: build-local-vue build-local-ws
+build-local-node: build-local-app build-local-ws
 
 build-local-ca:
 	docker build -t proxymurder/ca:local --target ca ./step
@@ -16,8 +16,8 @@ build-local-php:
 	docker build -t proxymurder/php:local --target php ./php
 build-local-nphp:
 	docker build -t proxymurder/nphp:local --target nphp ./php
-build-local-vue:
-	docker build -t proxymurder/vue:local --target vue ./node
+build-local-app:
+	docker build -t proxymurder/app:local --target app ./node
 build-local-ws:
 	docker build -t proxymurder/ws:local --target ws ./node
 build-local-nginx:

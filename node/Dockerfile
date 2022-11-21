@@ -1,13 +1,15 @@
+# node/Dockerfile
+# NodeJS base image
 FROM node:alpine as base
 
 USER root
 
-# Install container dependencies
+# Install dependencies
 RUN apk update
 RUN apk add --no-cache \
     git 
 
-# Vuejs app container
+# NodeJS application image 
 FROM base as app
 
 USER node
@@ -20,7 +22,7 @@ WORKDIR /home/node/app
 
 CMD ["npm", "run", "dev"]
 
-# Websocket container
+# NodeJS ws image
 FROM base as ws
 
 USER node
@@ -28,7 +30,7 @@ USER node
 # Install npm dependencies
 RUN npm install -g nodemon npm npm-check-updates
 
-RUN mkdir -p /ws
-WORKDIR /ws
+RUN mkdir -p /home/node/ws
+WORKDIR /home/node/ws
 
 CMD ["node", "server.js"]

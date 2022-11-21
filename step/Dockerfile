@@ -1,3 +1,4 @@
+# step/Dockerfile
 # Smallstep certificate authority image
 FROM smallstep/step-cli as ca
 
@@ -40,7 +41,7 @@ COPY ./docker-renewer-entrypoint /docker-renewer-entrypoint
 ADD ./crontab /etc/crontabs/root
 
 # Install permissions
-RUN chmod +x /docker-renewer-entrypoint /renewer.sh
+RUN chmod +x /renewer.sh /docker-renewer-entrypoint
 RUN chmod 0644 /etc/crontabs/root
 
 USER step
