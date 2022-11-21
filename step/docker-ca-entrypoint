@@ -39,7 +39,6 @@ function __ca () {
         setup_args=("${setup_args[@]}" --ssh)
     fi
     step ca init "${setup_args[@]}"
-    mv ${STEPPATH}/password ${STEPPATH}/secrets/
 }
 
 if [ ! -f "${STEPPATH}/config/ca.json" ]; then

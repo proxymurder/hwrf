@@ -20,17 +20,12 @@ COPY ./docker-ca-entrypoint /docker-ca-entrypoint
 # Install permissions
 RUN chmod +x /docker-ca-entrypoint
 
-# Set step-ca variables
-ENV PWDPATH="/home/step/password"
-ENV PKIPATH="/home/step/config/ca.json"
-
 USER step
 
 # Initialize certificate authority
 ENTRYPOINT ["/docker-ca-entrypoint"]
 
-# CMD ["exec", "/usr/local/bin/step-ca", "--password-file", ${PWDPATH}, ${PKIPATH}]
-CMD step-ca --password-file ${PWDPATH} ${PKIPATH}
+CMD ["step-ca", "--password-file", "/home/step/password", "/home/step/config/ca.json"]
 
 # Smallstep certificate renewer image
 FROM smallstep/step-cli as renewer

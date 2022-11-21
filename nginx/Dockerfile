@@ -13,7 +13,7 @@ COPY ./docker-nginx-entrypoint /docker-nginx-entrypoint
 
 RUN chmod +x /certwatch.sh /docker-nginx-entrypoint
 
-# Install ngnix configuration files
+# Install ngnix default conf
 COPY ./https.conf /etc/nginx/https.conf
 COPY ./proxy.conf /etc/nginx/proxy.conf
 
