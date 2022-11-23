@@ -18,12 +18,16 @@ volumes:
         driver: local
 secrets:
     password:
-        file: ./step/ca/password
+        file: ./step/password
 services:
     ca:
         image: proxymurder/ca:local
+        environment:
+            STEPCA_INIT_TMP: true
         volumes:
-            - ./step/ca:/home/step
+            - step/ca:/home/step/ca
+            - ./step/ca/config:/home/step/ca/config
+            - ./step/ca/certs:/home/step/ca/certs
         networks:
             - step
         ports:
@@ -31,15 +35,13 @@ services:
     renewer:
         image: proxymurder/renewer:local
         environment:
-            STEP_INIT_DNS: default oops
-            STEP_INIT_SAN: san test
+            STEP_INIT_DNS: default
             STEP_CA_URL: https://ca:5739
-            STEP_FINGERPRINT: f69eb366f39b87980b2c24f3eca0150d1c797d61dd188e9509238b42708dae5b
-            STEP_KID: VbFDnX2zfTYL3XYxHBeyNR2VgpOXP9IsmYHwt0D3YW0
+            STEP_FINGERPRINT: 24f2aabf59d141ce34077c873201456cbc6b4f72d94464be1a1119ed851e75ac
+            STEP_KID: shKmRJ8FuSZfOzBYG41WxbnxFSrTw5TSeaqGY36kcJI
             STEP_PASSWORD_FILE: /run/secrets/password
-            STEP_ROOT: /home/step/root_ca.crt
         volumes:
-            - step:/home/step
+            - step/renewer:/home/step/renewer
         secrets:
             - password
         networks:

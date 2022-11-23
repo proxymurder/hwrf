@@ -1,0 +1,34 @@
+#!/bin/sh
+export STEPPATH=$(step path)/ca
+STEPCA_CONF="${STEPPATH}/config/ca.json"
+STEPCA_PASS="${STEPPATH}/password"
+function __init () {
+    set -- \
+    --name "${STEPCA_INIT_NAME:-ProxyMurder Local Smallstep CA}" \
+    --dns "${STEPCA_INIT_DNS:-ca}" \
+    --provisioner "${STEPCA_INIT_PROVISIONER:-example@email.com}" \
+    --password-file "${STEPCA_PASS}" \
+    --address ":${STEPCA_INIT_PORT:-5739}" \
+    $(__ssh)
+    __password
+    step ca init "${@}"
+}
+function __ssh () {
+    if [ "${STEPCA_INIT_SSH}" == "1" || "${STEPCA_INIT_SSH}" == "true" ]; then
+        printf "%s\n" "--ssh"
+    fi
+}
+function __password () {
+    if [ ! -f "${STEPCA_PASS}" ]; then
+        printf "%s\n" "secret" > "${STEPCA_PASS}"
+    elif [ -n "${STEPCA_INIT_PASSWORD}" ]; then
+        printf "%s\n" "${STEPCA_INIT_PASSWORD}" > "${STEPCA_PASS}"
+    fi
+}
+if [ ! -f "${STEPCA_CONF}" ]; then
+    __init
+fi
+set -- "${@}" \
+--password-file "${STEP_PASS}" \
+"${STEP_CONF}"
+exec "${@}"

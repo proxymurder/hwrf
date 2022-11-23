@@ -1,23 +1,19 @@
 #!/bin/sh
 export STEPPATH=$(step path)
-
-sleep 5
-
-# get root certificate from smallstep ca
+STEP_ROOT="${STEPPATH}/root_ca.crt"
+STEP_NAME="${STEP_INIT_DNS:-local}.site"
+STEP_CRT="${STEPPATH}/${STEP_INIT_DNS:-local}.crt"
+STEP_KEY="${STEPPATH}/${STEP_INIT_DNS:-local}.key"
 function __root () {
-    rm -f "${STEPPATH}/root_ca.crt" "${STEPPATH}/site.crt" "${STEPPATH}/site.key"
-
-    step ca root "${STEPPATH}/root_ca.crt"
+    sleep 5
+    rm -f "${STEP_ROOT}" "${STEP_CERT}" "${STEP_KEY}"
+    step ca root "${STEP_ROOT}"
 }
-
-# get token from smallstep ca
 function __token () {
+    local map="${STEP_INIT_MAP:-local test}"
     set -- \
-    "${STEP_INIT_NAME:-default.site}" \
+    ${STEP_NAME} \
     --san localhost
-
-    local map="local test"
-
     if [ -n "${STEP_INIT_DNS}" ]; then
         for domain in $STEP_INIT_DNS; do    
             for val in $map; do
@@ -27,30 +23,22 @@ function __token () {
             done
         done
     fi
-
     if [ -n "${STEP_INIT_SAN}" ]; then
         for san in $STEP_INIT_SAN; do
             set -- ${@} \
             --san "${san}"
         done
-    fi
-    
+    fi   
     step ca token "${@}"
 }
-
-# get certificates from smallstep ca
 function __init () {
     __root
-
     set -- \
     --token $(__token) \
-    "${STEP_INIT_NAME:-default.site}" \
-    "${STEPPATH}/site.crt" \
-    "${STEPPATH}/site.key"
-
+    "${STEP_NAME}" \
+    "${STEP_CRT}" \
+    "${STEP_KEY}"
     step ca certificate "${@}"
 }
-
 __init
-
 exec "${@}"
