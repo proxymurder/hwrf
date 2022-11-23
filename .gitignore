@@ -1,2 +1,17 @@
-./step/ca/db
+.DS_Store
+/step/ca/db
+
+# local env files
 .env
+.env.backup
+.env.local
+.env.*.local
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
