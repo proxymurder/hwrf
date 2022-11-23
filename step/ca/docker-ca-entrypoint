@@ -1,4 +1,5 @@
 #!/bin/sh
+#lol
 export STEPPATH=$(step path)/ca
 STEPCA_CONF="${STEPPATH}/config/ca.json"
 STEPCA_PASS="${STEPPATH}/password"
