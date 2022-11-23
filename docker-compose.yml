@@ -1,38 +1,27 @@
 networks:
     step:
-        name: ${APP_NAME}-step-network
         driver: bridge
     redis:
-        name: ${APP_NAME}-redis-network
         driver: bridge
     backend:
-        name: ${APP_NAME}-backend-network
         driver: bridge
     local:
-        name: ${APP_NAME}-local-network
         driver: bridge
     www:
-        name: ${APP_NAME}-www-network
         driver: bridge
 volumes:
     step:
-        name: ${APP_NAME}-step-volume
-        driver: local
-    mysql:
-        name: ${APP_NAME}-mysql-volume
         driver: local
     redis:
-        name: ${APP_NAME}-redis-volume
+        driver: local
+    mysql:
         driver: local
 secrets:
     password:
-        file: ./ca/secrets/password
+        file: ./step/ca/password
 services:
     ca:
         image: proxymurder/ca:local
-        environment:
-            STEPCA_INIT_DNS: ca
-            STEPCA_INIT_PORT: 5739
         volumes:
             - ./step/ca:/home/step
         networks:
@@ -42,12 +31,11 @@ services:
     renewer:
         image: proxymurder/renewer:local
         environment:
-            COMMON_NAME: ${CERTS_NAME}
-            DOMAINS: ${CERTS_DOMAINS}
-            STEPPATH: ${CERTS_PATH}
-            STEP_CA_URL: ${CERTS_URL}
-            STEP_FINGERPRINT: ${CERTS_FINGERPRINT}
-            STEP_KID: ${CERTS_KID}
+            STEP_INIT_DNS: default oops
+            STEP_INIT_SAN: san test
+            STEP_CA_URL: https://ca:5739
+            STEP_FINGERPRINT: f69eb366f39b87980b2c24f3eca0150d1c797d61dd188e9509238b42708dae5b
+            STEP_KID: VbFDnX2zfTYL3XYxHBeyNR2VgpOXP9IsmYHwt0D3YW0
             STEP_PASSWORD_FILE: /run/secrets/password
             STEP_ROOT: /home/step/root_ca.crt
         volumes:

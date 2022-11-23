@@ -12,25 +12,30 @@ RUN apk add --no-cache \
 # NodeJS application image 
 FROM base as app
 
-USER node
-
-# Install npm dependencies
-RUN npm install -g npm npm-check-updates
-
 RUN mkdir -p /home/node/app
 WORKDIR /home/node/app
+
+# Install global npm dependencies
+RUN npm install -g \
+    npm \
+    npm-check-updates
+
+USER node
 
 CMD ["npm", "run", "dev"]
 
 # NodeJS ws image
 FROM base as ws
 
-USER node
-
-# Install npm dependencies
-RUN npm install -g nodemon npm npm-check-updates
-
 RUN mkdir -p /home/node/ws
 WORKDIR /home/node/ws
+
+# Install global npm dependencies
+RUN npm install -g \
+    npm \
+    npm-check-updates \
+    nodemon
+
+USER node
 
 CMD ["node", "server.js"]

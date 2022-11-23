@@ -1,24 +1,56 @@
 #!/bin/sh
-# Wait for CA
+export STEPPATH=$(step path)
+
 sleep 5
 
-# Clean old certificates
-rm -f /home/step/root_ca.crt
-rm -f /home/step/site.crt /home/step/site.key
+# get root certificate from smallstep ca
+function __root () {
+    rm -f "${STEPPATH}/root_ca.crt" "${STEPPATH}/site.crt" "${STEPPATH}/site.key"
 
-# Donwload the root certificate
-step ca root /home/step/root_ca.crt
+    step ca root "${STEPPATH}/root_ca.crt"
+}
 
-# Get subject alternative names
-for val in $DOMAINS; do
-    TMP="--san=${val}"
-    SAN="${SAN} ${TMP}"
-done
+# get token from smallstep ca
+function __token () {
+    set -- \
+    "${STEP_INIT_NAME:-default.site}" \
+    --san localhost
 
-# Get token
-STEP_TOKEN=$(step ca token $COMMON_NAME $SAN)
+    local map="local test"
 
-# Donwload the root certificate
-step ca certificate --token $STEP_TOKEN $COMMON_NAME /home/step/site.crt /home/step/site.key
+    if [ -n "${STEP_INIT_DNS}" ]; then
+        for domain in $STEP_INIT_DNS; do    
+            for val in $map; do
+                set -- ${@} \
+                --san "${domain}.${val}" \
+                --san "*.${domain}.${val}"
+            done
+        done
+    fi
 
-exec "$@"
+    if [ -n "${STEP_INIT_SAN}" ]; then
+        for san in $STEP_INIT_SAN; do
+            set -- ${@} \
+            --san "${san}"
+        done
+    fi
+    
+    step ca token "${@}"
+}
+
+# get certificates from smallstep ca
+function __init () {
+    __root
+
+    set -- \
+    --token $(__token) \
+    "${STEP_INIT_NAME:-default.site}" \
+    "${STEPPATH}/site.crt" \
+    "${STEPPATH}/site.key"
+
+    step ca certificate "${@}"
+}
+
+__init
+
+exec "${@}"

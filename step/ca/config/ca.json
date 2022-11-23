@@ -1,46 +1,50 @@
 {
-	"root": "/home/step/certs/root_ca.crt",
-	"federatedRoots": null,
-	"crt": "/home/step/certs/intermediate_ca.crt",
-	"key": "/home/step/secrets/intermediate_ca_key",
-	"address": ":5739",
-	"insecureAddress": "",
-	"dnsNames": [
-		"ca"
-	],
-	"logger": {
-		"format": "text"
-	},
-	"db": {
-		"type": "badgerv2",
-		"dataSource": "/home/step/db",
-		"badgerFileLoadingMode": ""
-	},
-	"authority": {
-		"provisioners": [
-			{
-				"type": "JWK",
-				"name": "example@email.com",
-				"key": {
-					"use": "sig",
-					"kty": "EC",
-					"kid": "6xI9y9-p5WAfbQKWRl2H6skNNHJeeNlN0Tuh7f7-WsA",
-					"crv": "P-256",
-					"alg": "ES256",
-					"x": "mM0Ux3Bm8Sh_jQTK0QlyjEK0_ApwPZ80OHe7cg81hQ0",
-					"y": "Tzbmqcaz3n_bsa_boItsWkRzj8u9h3nBl6QxgzcqSMo"
-				},
-				"encryptedKey": "eyJhbGciOiJQQkVTMi1IUzI1NitBMTI4S1ciLCJjdHkiOiJqd2sranNvbiIsImVuYyI6IkEyNTZHQ00iLCJwMmMiOjEwMDAwMCwicDJzIjoiVm5rMVR6RXN0al9YMlN5aHZ2R3NtUSJ9.x8UvUt-07aE2Yq5BvmKe0AMvCaChlGPAyfrGC5WFVU4Mq5w5Yhx7ug.olCx_KHY5LSkEqoN.WtIUJK9VxTkBIAdlzhgfH7nkMCTnMoblv68QLC6K5niogktCe4MU8KZnZpjpm-t1Y0n_tlHkeL9IxxAIQrVUp3SHv1Icq6ploDtBUfqeCHKkMbhLidUFSB-J5sh9-23VA0W9m6ekXLu9ir_gsJeG80z79IzN0DWLmACRz1Ef2wJA5DRxIM8HAq86ON1UUduN4DtxbQlP53-Y4Sle3Do_0zfXBbzjDvAOAq8RQ_-rn7q-RZsdxtDM0adDxr8vaPaCgN9ncNZll2IGKtkTla_XSL155zFUjI1otfOJpgQJAZJSEGJGmBr9lIZM8Sade-6RAT2-Cz-HZkX3eTejYtQ._1brFN30uxFDM2WmwvU8WA"
-			}
-		]
-	},
-	"tls": {
-		"cipherSuites": [
-			"TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256",
-			"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"
-		],
-		"minVersion": 1.2,
-		"maxVersion": 1.3,
-		"renegotiation": false
-	}
+    "root": "/home/step/certs/root_ca.crt",
+    "federatedRoots": null,
+    "crt": "/home/step/certs/intermediate_ca.crt",
+    "key": "/home/step/secrets/intermediate_ca_key",
+    "address": ":5739",
+    "insecureAddress": "",
+    "dnsNames": ["ca"],
+    "logger": {
+        "format": "text"
+    },
+    "db": {
+        "type": "badgerv2",
+        "dataSource": "/home/step/db",
+        "badgerFileLoadingMode": ""
+    },
+    "authority": {
+        "claims": {
+            "minTLSCertDuration": "22h",
+            "maxTLSCertDuration": "8800h",
+            "defaultTLSCertDuration": "4400h",
+            "disableRenewal": false
+        },
+        "provisioners": [
+            {
+                "type": "JWK",
+                "name": "example@email.com",
+                "key": {
+                    "use": "sig",
+                    "kty": "EC",
+                    "kid": "VbFDnX2zfTYL3XYxHBeyNR2VgpOXP9IsmYHwt0D3YW0",
+                    "crv": "P-256",
+                    "alg": "ES256",
+                    "x": "qZhG44gksUFZnwY8DRKIYoWBNDI_nrKr5Z-_8_V5F_g",
+                    "y": "Jm7DMkP1kXOVK-7SqOJCoQdmT27l002UDhcSyHoMs48"
+                },
+                "encryptedKey": "eyJhbGciOiJQQkVTMi1IUzI1NitBMTI4S1ciLCJjdHkiOiJqd2sranNvbiIsImVuYyI6IkEyNTZHQ00iLCJwMmMiOjEwMDAwMCwicDJzIjoicndxWGcwbTNiWHJQcUZ3b2tSVTUwUSJ9.5pC5ioO80d38D1gSzwjhx3Rg336e1IUTF0boikZzgIPFQ_LSzvRfmg.WWMW8JsuIWrrA62e.-LtvkACZJkqJaLYiZjRZLR6lrJ0wMR1q45NxkYwSd7iIvv4Vuujv_j3xt0mZMlWn7gYkd5A0_iybqg8XgOjwn_stOupGMRr13drXPvbloS0KRvUIY-4ZqiXd7E3WIMh2pTVKnvplVxKQBSaOvbbcgkxuX55gfUWMK3s09OhAgNSZC6mxacx6hw5T3cXxMvh8EoYzc6H00b9cu31nm4V5GAEk6vrkRHPS3OlD1H4j0JbSIOz3hebVuPgKPLKOeiRDSzleGQYJnC4kNKndkhl1tnUx-L_4PfAaVrwikabxXgouMVUpTksL_VwBOSDFz9XYSoptPNm-nRekmOSIbCM.8YmtY2zatyWXwXrFJwX_rA"
+            }
+        ]
+    },
+    "tls": {
+        "cipherSuites": [
+            "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256",
+            "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"
+        ],
+        "minVersion": 1.2,
+        "maxVersion": 1.3,
+        "renegotiation": false
+    }
 }
