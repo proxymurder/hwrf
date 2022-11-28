@@ -1,33 +1,29 @@
 networks:
-    step:
-        driver: bridge
-    redis:
-        driver: bridge
     backend:
         driver: bridge
     local:
         driver: bridge
+    redis:
+        driver: bridge
+    step:
+        driver: bridge
     www:
         driver: bridge
 volumes:
-    step:
+    mysql:
         driver: local
     redis:
         driver: local
-    mysql:
+    step:
         driver: local
 secrets:
     password:
-        file: ./step/password
+        file: ./step/ca/tmp/password
 services:
     ca:
         image: proxymurder/ca:local
-        environment:
-            STEPCA_INIT_TMP: true
         volumes:
-            - step/ca:/home/step/ca
-            - ./step/ca/config:/home/step/ca/config
-            - ./step/ca/certs:/home/step/ca/certs
+            - ./step/ca/tmp:/home/step
         networks:
             - step
         ports:
@@ -41,7 +37,7 @@ services:
             STEP_KID: shKmRJ8FuSZfOzBYG41WxbnxFSrTw5TSeaqGY36kcJI
             STEP_PASSWORD_FILE: /run/secrets/password
         volumes:
-            - step/renewer:/home/step/renewer
+            - step:/home/step/renewer
         secrets:
             - password
         networks:
@@ -88,7 +84,7 @@ services:
             - VITE_SERVER_CERT=${DEV_SERVER_CERT}
             - VITE_SERVER_CERTPATH=../../..${CERTS_PATH}
         volumes:
-            - step:/home/step:ro
+            - step:/home/step/renewer:ro
             - ./laravel/src:/var/www/html
         networks:
             - local
@@ -100,7 +96,7 @@ services:
     backend:
         image: proxymurder/nginx:latest
         volumes:
-            - step:/home/step:ro
+            - step:/home/step/renewer:ro
             - ./laravel/src:/var/www/html
             - ./nginx/backend:/etc/nginx/conf.d
         networks:
@@ -119,7 +115,7 @@ services:
             - VITE_SERVER_CERT=${DEV_SERVER_CERT}
             - VITE_SERVER_CERTPATH=../../..${CERTS_PATH}
         volumes:
-            - step:/home/step:ro
+            - step:/home/step/renewer:ro
             - ./vue/app:/usr/share/nginx/html
         networks:
             - local
@@ -131,7 +127,7 @@ services:
     frontend:
         image: proxymurder/nginx:latest
         volumes:
-            - step:/home/step:ro
+            - step:/home/step/renewer:ro
             - ./vuejs-app:/usr/share/nginx/html
             - ./nginx/frontend:/etc/nginx/conf.d
         networks:
@@ -151,7 +147,7 @@ services:
             - REDIS_HOST=memory
             - REDIS_PORT=6379
         volumes:
-            - step:/home/step:ro
+            - step:/home/step/renewer:ro
             - ./ws:/home/node/ws
         networks:
             - redis
@@ -165,7 +161,7 @@ services:
     local:
         image: proxymurder/nginx:latest
         volumes:
-            - step:/home/step:ro
+            - step:/home/step/renewer:ro
             - ./nginx/local:/etc/nginx/conf.d
         networks:
             - local
@@ -182,7 +178,7 @@ services:
     www:
         image: proxymurder/nginx:latest
         volumes:
-            - step:/home/step:ro
+            - step:/home/step/renewer:ro
             - ./nginx/www:/etc/nginx/conf.d
         networks:
             - www

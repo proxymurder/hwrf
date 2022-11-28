@@ -4,6 +4,6 @@
 [submodule "node-app"]
 	path = node/app
 	url = https://github.com/proxymurder/vue-template.git
-[submodule "php-backend"]
-	path = php/backend
+[submodule "php-src"]
+	path = php/src
 	url = https://github.com/proxymurder/laravel-template.git

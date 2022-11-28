@@ -1,34 +1,42 @@
 #!/bin/sh
-export STEPPATH=$(step path)/ca
-STEPCA_CONF="${STEPPATH}/config/ca.json"
-STEPCA_PASS="${STEPPATH}/password"
+export STEPPATH=$(step path)
+export CONFPATH="${STEPPATH}/config/ca.json"
+export PASSPATH="${STEPPATH}/password"
 function __init () {
     set -- \
-    --name "${STEPCA_INIT_NAME:-ProxyMurder Local Smallstep CA}" \
+    --name "${STEPCA_INIT_NAME:-Default}/ProxyMurder Local Smallstep CA" \
     --dns "${STEPCA_INIT_DNS:-ca}" \
     --provisioner "${STEPCA_INIT_PROVISIONER:-example@email.com}" \
-    --password-file "${STEPCA_PASS}" \
+    --password-file "${PASSPATH}" \
     --address ":${STEPCA_INIT_PORT:-5739}" \
     $(__ssh)
     __password
     step ca init "${@}"
+    
+}
+function __required () {
+    local r=1
+    for var in $@; do
+        local e=$( eval echo \"\${$var}\" )
+        if [ -z $e ]; then
+            r=0
+        fi
+    done
+    printf "%s\n" "${r}"
 }
 function __ssh () {
-    if [ "${STEPCA_INIT_SSH}" == "1" || "${STEPCA_INIT_SSH}" == "true" ]; then
-        printf "%s\n" "--ssh"
+    if [[ "${STEPCA_INIT_SSH}" == "true" || "${STEPCA_INIT_SSH}" == "1" ]]; then
+        printf "%s" "--ssh"
     fi
 }
 function __password () {
-    if [ ! -f "${STEPCA_PASS}" ]; then
-        printf "%s\n" "secret" > "${STEPCA_PASS}"
-    elif [ -n "${STEPCA_INIT_PASSWORD}" ]; then
-        printf "%s\n" "${STEPCA_INIT_PASSWORD}" > "${STEPCA_PASS}"
+    if [ ! -f "${PASSPATH}" ]; then
+        printf "%s\n" "secret" > "${PASSPATH}"
+        elif [ -n "${STEPCA_INIT_PASSWORD}" ]; then
+        printf "%s\n" "${STEPCA_INIT_PASSWORD}" > "${PASSPATH}"
     fi
 }
-if [ ! -f "${STEPCA_CONF}" ]; then
+if [ ! -f "${CONFPATH}" ]; then
     __init
 fi
-set -- "${@}" \
---password-file "${STEP_PASS}" \
-"${STEP_CONF}"
 exec "${@}"

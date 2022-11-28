@@ -1,6 +1,5 @@
-# step/ca/Dockerfile
 # Smallstep certificate authority image
-FROM smallstep/step-cli as ca
+FROM smallstep/step-cli
 
 USER root
 
@@ -26,4 +25,4 @@ USER step
 # Initialize certificate authority
 ENTRYPOINT ["/docker-ca-entrypoint"]
 
-CMD ["step-ca"]
+CMD ["step-ca", "--password-file", "/home/step/password", "/home/step/config/ca.json"]
