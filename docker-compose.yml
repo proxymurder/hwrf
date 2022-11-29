@@ -18,12 +18,15 @@ volumes:
         driver: local
 secrets:
     password:
-        file: ./step/ca/tmp/password
+        file: ./step/certificates/tmp/password
 services:
-    ca:
-        image: proxymurder/ca:local
+    certificates:
+        image: proxymurder/certificates:local
+        environment:
+            STEPCA_INIT_NAME: Development
+            STEPCA_INIT_DNS: certificates
         volumes:
-            - ./step/ca/tmp:/home/step
+            - ./step/certificates/tmp:/home/step/certificates
         networks:
             - step
         ports:
@@ -32,9 +35,9 @@ services:
         image: proxymurder/renewer:local
         environment:
             STEP_INIT_DNS: default
-            STEP_CA_URL: https://ca:5739
-            STEP_FINGERPRINT: 24f2aabf59d141ce34077c873201456cbc6b4f72d94464be1a1119ed851e75ac
-            STEP_KID: shKmRJ8FuSZfOzBYG41WxbnxFSrTw5TSeaqGY36kcJI
+            STEP_CA_URL: https://certificates:5739
+            STEP_FINGERPRINT: ef37fae4776bba20a40979975bf3dc2afd210d4c1d19025660c9558b1920f574
+            STEP_KID: vVBENl2ydTMsWNciDyqbSL_EQ7mdUjh_-iM8rHcWc3A
             STEP_PASSWORD_FILE: /run/secrets/password
         volumes:
             - step:/home/step/renewer
@@ -43,7 +46,7 @@ services:
         networks:
             - step
         depends_on:
-            - ca
+            - certificates
     db:
         image: mysql:latest
         environment:

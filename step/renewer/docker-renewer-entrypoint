@@ -1,23 +1,22 @@
 #!/bin/sh
-export STEPPATH=$(step path)/renewer
-export STEP_CRT="${STEPPATH}/${STEP_INIT_DNS:-local}.crt"
-export STEP_KEY="${STEPPATH}/${STEP_INIT_DNS:-local}.key"
+export STEP_ROOT=/home/step/renewer/root_ca.crt
+export SITECRT=/home/step/renewer/site.crt
+export SITEKEY=/home/step/renewer/site.key
 function __root () {
-    local root="${STEPPATH}/root_ca.crt"
-    rm -f "${root}" 
-    rm -f "${STEP_CRT}" "${STEP_KEY}"
-    step ca root "${root}"
+    rm -f "${STEP_ROOT}"
+    rm -f "${SITECRT}" "${SITEKEY}"
+    step ca root "${STEP_ROOT}"
 }
 function __token () {
     local map="local test"
     if [ -n ${STEP_INIT_MAP} ]; then
-        $map="${map} ${STEP_INIT_MAP}"
+        map="${map} ${STEP_INIT_MAP}"
     fi
     set -- \
-    "${STEP_INIT_DNS:-local}.site" \
-    --san "localhost"
+    "${STEP_INIT_NAME:-local.site}" \
+    --san localhost
     if [ -n "${STEP_INIT_DNS}" ]; then
-        for domain in $STEP_INIT_DNS; do    
+        for domain in $STEP_INIT_DNS; do
             for val in $map; do
                 set -- ${@} \
                 --san "${domain}.${val}" \
@@ -30,18 +29,17 @@ function __token () {
             set -- ${@} \
             --san "${san}"
         done
-    fi   
+    fi
     step ca token "${@}"
 }
 function __init () {
-    sleep 5
     __root
     set -- \
     --token $(__token) \
-    "${STEP_INIT_DNS:-local}.site" \
-    "${STEP_CRT}" \
-    "${STEP_KEY}"
+    "${STEP_INIT_NAME:-local.site}" \
+    "${SITECRT}" "${SITEKEY}"
     step ca certificate "${@}"
 }
+sleep 5
 __init
 exec "${@}"

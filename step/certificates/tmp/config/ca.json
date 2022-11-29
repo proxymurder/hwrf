@@ -1,0 +1,50 @@
+{
+    "root": "/home/step/certificates/certs/root_ca.crt",
+    "federatedRoots": null,
+    "crt": "/home/step/certificates/certs/intermediate_ca.crt",
+    "key": "/home/step/certificates/secrets/intermediate_ca_key",
+    "address": ":5739",
+    "insecureAddress": "",
+    "dnsNames": ["certificates"],
+    "logger": {
+        "format": "text"
+    },
+    "db": {
+        "type": "badgerv2",
+        "dataSource": "/home/step/certificates/db",
+        "badgerFileLoadingMode": ""
+    },
+    "authority": {
+        "claims": {
+            "minTLSCertDuration": "22h",
+            "maxTLSCertDuration": "8800h",
+            "defaultTLSCertDuration": "4400h",
+            "disableRenewal": false
+        },
+        "provisioners": [
+            {
+                "type": "JWK",
+                "name": "example@email.com",
+                "key": {
+                    "use": "sig",
+                    "kty": "EC",
+                    "kid": "vVBENl2ydTMsWNciDyqbSL_EQ7mdUjh_-iM8rHcWc3A",
+                    "crv": "P-256",
+                    "alg": "ES256",
+                    "x": "7Q_ZlbciV8FyXHhvW8_Kwydt6UIt79hwI7hR1z-HfA0",
+                    "y": "ZdBJG89Fx63BLvCgZq-WOCogmZhy1GxsJRRTX88_hO0"
+                },
+                "encryptedKey": "eyJhbGciOiJQQkVTMi1IUzI1NitBMTI4S1ciLCJjdHkiOiJqd2sranNvbiIsImVuYyI6IkEyNTZHQ00iLCJwMmMiOjEwMDAwMCwicDJzIjoiS2wyZlJYT2lEaG1nbGVZUThXUkVkdyJ9.PcNPRgWWczPNhQyYo3GTK7tWIWor_UuxdQ299KPJM6tm04S0kGNsFw.3CFCBYUIOz1mqFXS.B8JTAJ0BvjvCqL9ao73B8xiS8od_gSegDnqXbgcLK1jn0-HrjVhKvQpVjlX1oVSsty5I4PkZnNlfYpbjw_ZUxzwj4PRCYjc0jTWPj8VRozfQhb1ZUXwFdX3kr6cekHq1FneVVmZiDww5CMfhP6LSSq0CkSsP41fAfNv_z5ZF9V87gaZIwGaTNUR8bXJPKlAC046Qrjvv-ATpuWLUk6mC6Wx_jjZ04POI8P76tREp6vKjbFCrqxfa53LosVYy3GHsZ9HtFX5Ii36rfGHSKlPgFvZKjug96x25u1ydMy1vtS_Aexl0faCoLR_kVex-begn4-fDIRw6D0h41eSYRCQ.Qa0Lb2Rs0ar5yrWhY96uZg"
+            }
+        ]
+    },
+    "tls": {
+        "cipherSuites": [
+            "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256",
+            "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"
+        ],
+        "minVersion": 1.2,
+        "maxVersion": 1.3,
+        "renegotiation": false
+    }
+}

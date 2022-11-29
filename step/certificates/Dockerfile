@@ -1,4 +1,3 @@
-# Smallstep certificate authority image
 FROM smallstep/step-cli
 
 USER root
@@ -15,14 +14,20 @@ RUN apk add --no-cache libcap
 RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/local/bin/step-ca
 
 # Install executables
-COPY ./docker-ca-entrypoint /docker-ca-entrypoint
+COPY ./docker-certificates-entrypoint /docker-certificates-entrypoint
 
 # Install permissions
-RUN chmod +x /docker-ca-entrypoint
+RUN chmod +x /docker-certificates-entrypoint
+
+# Install workdir
+RUN mkdir -p /home/step/certificates
+RUN chown step:step /home/step/certificates
+
+WORKDIR /home/step/certificates
 
 USER step
 
 # Initialize certificate authority
-ENTRYPOINT ["/docker-ca-entrypoint"]
+ENTRYPOINT ["/docker-certificates-entrypoint"]
 
-CMD ["step-ca", "--password-file", "/home/step/password", "/home/step/config/ca.json"]
+CMD ["step-ca", "--password-file", "password", "config/ca.json"]

@@ -1,8 +1,8 @@
-[submodule "node-ws"]
-	path = node/ws
+[submodule "node-websockets-ws"]
+	path = node/websockets/ws
 	url = https://github.com/proxymurder/ws-template.git
-[submodule "node-app"]
-	path = node/app
+[submodule "node-vue-app"]
+	path = node/vue/app
 	url = https://github.com/proxymurder/vue-template.git
 [submodule "php-src"]
 	path = php/src

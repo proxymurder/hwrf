@@ -1,3 +1,2 @@
 #!/bin/sh
-# Force renew certificates
-step ca renew --force "${STEP_CRT}" "${STEP_KEY}"
+step ca renew --force /home/step/renewer/site.crt /home/step/renewer/site.key
