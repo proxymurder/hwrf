@@ -21,7 +21,7 @@ secrets:
         file: ./step/certificates/tmp/password
 services:
     certificates:
-        image: proxymurder/certificates:local
+        image: test/certificates:latest
         environment:
             STEPCA_INIT_NAME: Development
             STEPCA_INIT_DNS: certificates
@@ -32,7 +32,7 @@ services:
         ports:
             - 5739
     renewer:
-        image: proxymurder/renewer:local
+        image: test/renewer:latest
         environment:
             STEP_INIT_DNS: default
             STEP_CA_URL: https://certificates:5739
@@ -68,7 +68,7 @@ services:
         ports:
             - 6379
     php:
-        image: proxymurder/php:latest
+        image: test/php:latest
         volumes:
             - ./laravel/src:/var/www/html
         networks:
@@ -80,7 +80,7 @@ services:
             - db
             - memory
     nphp:
-        image: proxymurder/nphp:latest
+        image: test/nphp:latest
         environment:
             - VITE_SERVER_HMR=${DEV_SERVER_LARAVEL_HMR}
             - VITE_SERVER_KEY=${DEV_SERVER_KEY}
@@ -97,7 +97,7 @@ services:
             - renewer
             - php
     backend:
-        image: proxymurder/nginx:latest
+        image: test/nginx:latest
         volumes:
             - step:/home/step/renewer:ro
             - ./laravel/src:/var/www/html
@@ -112,7 +112,7 @@ services:
             - renewer
             - php
     app:
-        image: proxymurder/app:latest
+        image: test/vue:latest
         environment:
             - VITE_SERVER_KEY=${DEV_SERVER_KEY}
             - VITE_SERVER_CERT=${DEV_SERVER_CERT}
@@ -128,7 +128,7 @@ services:
             - renewer
             - php
     frontend:
-        image: proxymurder/nginx:latest
+        image: test/nginx:latest
         volumes:
             - step:/home/step/renewer:ro
             - ./vuejs-app:/usr/share/nginx/html
@@ -142,7 +142,7 @@ services:
             - renewer
             - php
     ws:
-        image: proxymurder/websockets:latest
+        image: test/websockets:latest
         environment:
             - WS_SERVER_KEY=${DEV_SERVER_KEY}
             - WS_SERVER_CERT=${DEV_SERVER_CERT}
@@ -162,7 +162,7 @@ services:
             - renewer
             - memory
     local:
-        image: proxymurder/nginx:latest
+        image: test/nginx:latest
         volumes:
             - step:/home/step/renewer:ro
             - ./nginx/local:/etc/nginx/conf.d
@@ -179,7 +179,7 @@ services:
             - frontend
             - ws
     www:
-        image: proxymurder/nginx:latest
+        image: test/nginx:latest
         volumes:
             - step:/home/step/renewer:ro
             - ./nginx/www:/etc/nginx/conf.d

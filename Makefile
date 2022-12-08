@@ -1,29 +1,29 @@
 all: build-local local
 
-build-local: build-local-step build-local-laravel build-local-node build-local-servers
+build-test: build-test-step build-test-php build-test-node build-test-servers
 
-build-local-step: build-local-certificates build-local-renewer
+build-test-step: test-certificates test-renewer
 
-build-local-laravel: build-local-php build-local-nphp
+build-test-php: test-php test-nphp
 
-build-local-node: build-local-app build-local-ws
+build-test-node: test-app test-ws
 
-build-local-servers: build-local-nginx
+build-test-servers: test-nginx
 
-build-local-certificates:
-	docker build -t proxymurder/certificates:local ./step/certificates
-build-local-renewer:
-	docker build -t proxymurder/renewer:local ./step/renewer
-build-local-php:
-	docker build -t proxymurder/php:local --target php ./php
-build-local-nphp:
-	docker build -t proxymurder/nphp:local --target nphp ./php
-build-local-app:
-	docker build -t proxymurder/app:local --target app ./node
-build-local-ws:
-	docker build -t proxymurder/ws:local --target ws ./node
-build-local-nginx:
-	docker build -t proxymurder/nginx:local ./nginx 
+test-certificates:
+	docker build -t test/certificates:latest ./step/certificates
+test-renewer:
+	docker build -t test/renewer:latest ./step/renewer
+test-php:
+	docker build -t test/php:latest --target php ./php
+test-nphp:
+	docker build -t test/nphp:latest --target nphp ./php
+test-app:
+	docker build -t test/vue:latest --target app ./node
+test-ws:
+	docker build -t test/websockets:latest --target ws ./node
+test-nginx:
+	docker build -t test/nginx:latest ./nginx 
 
 local:
 	docker compose up -d local
