@@ -1,5 +1,4 @@
 .DS_Store
-/step/ca/db
 
 # local env files
 .env
