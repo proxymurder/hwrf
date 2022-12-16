@@ -11,23 +11,17 @@ TO-DO: find out if I can create this recursively.
 Most Docker services have their own Dockerfile, and must be built before hand.
 Build images using docker compose:
 
-```
-docker compose build
-```
+`docker compose build`
 
 Copy .env.example to .env
 
-```
-cp .env.example .env
-```
+`cp .env.example .env`
 
 This comes in handy when it is time to install, for example; node modules or composer packages:
 
 i.e frontend dependencies
 
-```
-docker compose run --rm app npm install
-```
+`docker compose run --rm app npm install`
 
 Redis, Smallstep Certificate Authority, mySQL and some services use a default Image or have not yet been configured for custom usage.
 
@@ -44,13 +38,9 @@ Vite server is available for development environement through the `laravel` serv
 
 To install backend dependencies run:
 
-```
-docker compose run --rm php composer instal
-```
+`docker compose run --rm php composer instal`
 
-```
-docker compose run --rm laravel npm install
-```
+`docker compose run --rm laravel npm install`
 
 ## [Node](node)
 
@@ -70,9 +60,7 @@ Node js websocket submodule to connect Redis server, Laravel broadcast/cache and
 
 SmallStep CA is linked to step/ca folder. On clen install run:
 
-```
-docker compose run --rm certauth step ca init
-```
+`docker compose run --rm certauth step ca init`
 
 default variables are set to be:
 
@@ -87,16 +75,12 @@ Password:   *password*
 
 password file needs to be created on the step/certauth/secrets folder:
 
-```
-printf "%s\n" "secret" > step/certauth/secrets/password
-```
+`printf "%s\n" "secret" > step/certauth/secrets/password`
 
 Add the "authority.claims" property inside PKI config (ca.json).
 Default TLSCertDurations are 60s.
 
 ```
-\\ ca.json
-
 authority: {
     "claims":{
     "minTLSCertDuration": "22h",
@@ -114,16 +98,8 @@ Fingerprint and KID are available in respective config/defaults.json and config/
 
 Fingerprint is also available through:
 
-```
-docker compose run --rm ca step certificate fingerprint /home/step/certs/root_ca.crt
-```
+`docker compose run --rm ca step certificate fingerprint /home/step/certs/root_ca.crt`
 
 Once SmallStep CA is up and running we can also retreive the KID through:
 
-```
-docker compose exec ca step ca provisioner list
-
-// to-do: docker compose run --rm --service-ports certauth step ca provisioners list
-// Command should work but it is not mapping ports.
-
-```
+`docker compose exec ca step ca provisioner list`
