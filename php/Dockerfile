@@ -1,5 +1,3 @@
-# php/Dockerfile
-# PHP-FPM backend image
 FROM php:fpm-alpine as php
 
 USER root
@@ -48,13 +46,13 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 RUN printf '%s\n\n%s' '#!/bin/sh' 'php artisan "$@"' > /usr/local/bin/artisan
 RUN chmod +x /usr/local/bin/artisan
 
-RUN addgroup -g 1000 laravel
-RUN adduser -u 1000 -D -S -G laravel laravel
+RUN addgroup -g 1000 php
+RUN adduser -u 1000 -D -S -G php php
 
-RUN mkdir -p /home/laravel/backend
-WORKDIR /home/laravel/backend
+RUN mkdir -p /home/php/src
+WORKDIR /home/php/src
 
-USER laravel
+USER php
 
 # NodeJS backend image
 FROM node:alpine as nphp
@@ -69,8 +67,8 @@ RUN apk add --no-cache \
 # Install/Update npm global dependencies
 RUN npm install -g npm npm-check-updates
 
-RUN mkdir -p /home/node/backend
-WORKDIR /home/node/backend
+RUN mkdir -p /home/node/src
+WORKDIR /home/node/src
 
 USER node
 

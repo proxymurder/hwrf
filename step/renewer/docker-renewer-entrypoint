@@ -1,7 +1,7 @@
 #!/bin/sh
-export STEP_ROOT=/home/step/renewer/root_ca.crt
 export SITECRT=/home/step/renewer/site.crt
 export SITEKEY=/home/step/renewer/site.key
+COMMON_NAME="${STEP_INIT_NAME:-local.site}"
 function __root () {
     rm -f "${STEP_ROOT}"
     rm -f "${SITECRT}" "${SITEKEY}"
@@ -24,19 +24,21 @@ function __token () {
             done
         done
     fi
+    unset domain
     if [ -n "${STEP_INIT_SAN}" ]; then
         for san in $STEP_INIT_SAN; do
             set -- ${@} \
             --san "${san}"
         done
     fi
+    unset san
     step ca token "${@}"
 }
 function __init () {
     __root
     set -- \
     --token $(__token) \
-    "${STEP_INIT_NAME:-local.site}" \
+    "${COMMON_NAME}" \
     "${SITECRT}" "${SITEKEY}"
     step ca certificate "${@}"
 }
