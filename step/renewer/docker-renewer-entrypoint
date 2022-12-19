@@ -42,6 +42,5 @@ function __init () {
     "${SITECRT}" "${SITEKEY}"
     step ca certificate "${@}"
 }
-sleep 5
 __init
 exec "${@}"
