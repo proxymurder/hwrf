@@ -1,105 +1,17 @@
-# IMPORTANT
+## Git Modules
 
-When creating a new repository from this template, submodules need to be created from their respective templates too.
+Proxyd works with three submodules:
 
-TO-DO: find out if I can create this recursively.
+-   Php submodule which normally contain the API, as well as the OAuth endpoints.
+-   App submodule which contain the vite generated static files for VueJs PWA or SPA.
+-   WebSocket submodule which run's all of the in house websocket connections and/or applications.
 
-# Docker
+All three submodules, aswell as proxyd repositoy, are templates and should be created on new proxyd project.
 
-## Build
+## Makefile
 
-Most Docker services have their own Dockerfile, and must be built before hand.
-Build images using docker compose:
+Makefile at the root of project creates the different images to test (TO-DO: and deploy) the proxyd web infrastructure.
 
-`docker compose build`
+Run `make` command to build and launch local development environement containers, alternatively you can just run `make build-test`, `make build-test-{step|php|node|servers}` to build same stack images ,or `make test-{service}` to build specific images.
 
-Copy .env.example to .env
-
-`cp .env.example .env`
-
-This comes in handy when it is time to install, for example; node modules or composer packages:
-
-i.e frontend dependencies
-
-`docker compose run --rm app npm install`
-
-Redis, Smallstep Certificate Authority, mySQL and some services use a default Image or have not yet been configured for custom usage.
-
-## Submodules
-
-## [Php](php)
-
-### [Laravel Backend](https://github.com/proxymurder/laravel-backend)
-
-Laravel backend submodule contains API endpoints, and a complete OAuth Server implementation.
-Php files are being executed with `php-fpm` through `php` docker service, and served with nginx `www-php` service.
-Laravel backend depends on the mySQL `db` service and Redis `memory` service.
-Vite server is available for development environement through the `laravel` service.
-
-To install backend dependencies run:
-
-`docker compose run --rm php composer instal`
-
-`docker compose run --rm laravel npm install`
-
-## [Node](node)
-
-### [Vue Js App](https://github.com/proxymurder/vuejs-app)
-
-Vue js app submodule for a static client side rendered web application.
-
-### [Node Js Websocket](https://github.com/proxymurder/websocket)
-
-Node js websocket submodule to connect Redis server, Laravel broadcast/cache and display them in Vue js submodules.
-
-# [Smallstep](step)
-
-## [Certificate Authority](step/certauth)
-
-### config
-
-SmallStep CA is linked to step/ca folder. On clen install run:
-
-`docker compose run --rm certauth step ca init`
-
-default variables are set to be:
-
-```
-Deployment: Standalone
-PKI name:   ca
-DNS names:  ['certauth']
-CA Address: 5739
-Provisoner: example@email.com
-Password:   *password*
-```
-
-password file needs to be created on the step/certauth/secrets folder:
-
-`printf "%s\n" "secret" > step/certauth/secrets/password`
-
-Add the "authority.claims" property inside PKI config (ca.json).
-Default TLSCertDurations are 60s.
-
-```
-authority: {
-    "claims":{
-    "minTLSCertDuration": "22h",
-    "maxTLSCertDuration": "8800h",
-    "defaultTLSCertDuration": "4400h",
-    "disableRenewal": false
-    },
-    provisioners:[...],
-}
-```
-
-## [Certificate Watcher](step/certwatch)
-
-Fingerprint and KID are available in respective config/defaults.json and config/ca.json.
-
-Fingerprint is also available through:
-
-`docker compose run --rm ca step certificate fingerprint /home/step/certs/root_ca.crt`
-
-Once SmallStep CA is up and running we can also retreive the KID through:
-
-`docker compose exec ca step ca provisioner list`
+Lastly run `make local|www|rollback` to build detached local development environement containers, production environement containers or destroy containers respectively.
