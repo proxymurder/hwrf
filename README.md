@@ -2,9 +2,9 @@
 
 Proxyd works with three submodules:
 
--   Php submodule which normally contain the API, as well as the OAuth endpoints.
--   App submodule which contain the vite generated static files for VueJs PWA or SPA.
--   WebSocket submodule which run's all of the in house websocket connections and/or applications.
+-   Php submodule ([php/src](https://github.com/proxymurder/laravel-template) which normally contain the API, as well as the OAuth endpoints.
+-   App submodule ([node/vue/app](https://github.com/proxymurder/vue-template)) which contain the vite generated static files for VueJs PWA or SPA.
+-   WebSocket submodule ([node/websockets/ws](https://github.com/proxymurder/ws-template)) which run's all of the in house websocket connections and/or applications.
 
 All three submodules, aswell as proxyd repositoy, are templates and should be created on new proxyd project.
 

@@ -29,7 +29,7 @@ Redis, Smallstep Certificate Authority, mySQL and some services use a default Im
 
 ## [Php](php)
 
-### [Laravel Backend](https://github.com/proxymurder/laravel-backend)
+### [Laravel Backend](backend)
 
 Laravel backend submodule contains API endpoints, and a complete OAuth Server implementation.
 Php files are being executed with `php-fpm` through `php` docker service, and served with nginx `www-php` service.
