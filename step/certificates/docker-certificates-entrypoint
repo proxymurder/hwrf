@@ -39,7 +39,7 @@ function __password () {
     else
         __urandom > "${PWDPATH}"
     fi
-    printf "%s" "Generating ${PWDPATH}... done!"
+    printf "%s" "Generating password... done!"
 }
 function __urandom () {
     set +o pipefail

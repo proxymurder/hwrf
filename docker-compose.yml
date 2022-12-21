@@ -34,11 +34,12 @@ services:
     renewer:
         image: test/renewer:latest
         environment:
-            STEP_INIT_DNS: default
+            STEP_INIT_DNS: default proxyd
             STEP_CA_URL: https://certificates:5739
-            STEP_FINGERPRINT: ef37fae4776bba20a40979975bf3dc2afd210d4c1d19025660c9558b1920f574
-            STEP_KID: vVBENl2ydTMsWNciDyqbSL_EQ7mdUjh_-iM8rHcWc3A
+            STEP_FINGERPRINT: 673faa2736cfab929271386853878ad0a7413ec52bdbaceebb6fddfc8de67212
+            STEP_KID: HrjM7KHlS6O2N-42XuXvvFSu86w18SODvlux4SGfKKg
             STEP_PASSWORD_FILE: /run/secrets/password
+            STEP_ROOT: /home/step/renewer/root_ca.crt
         volumes:
             - step:/home/step/renewer
         secrets:
@@ -50,9 +51,9 @@ services:
     db:
         image: mysql:latest
         environment:
-            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_DATABASE: default
             MYSQL_ROOT_HOST: '%'
-            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_ROOT_PASSWORD: secret
         volumes:
             - mysql:/var/lib/mysql
         networks:
@@ -70,7 +71,7 @@ services:
     php:
         image: test/php:latest
         volumes:
-            - ./laravel/src:/var/www/html
+            - ./php/src:/home/php/src
         networks:
             - backend
             - redis
@@ -82,13 +83,12 @@ services:
     nphp:
         image: test/nphp:latest
         environment:
-            - VITE_SERVER_HMR=${DEV_SERVER_LARAVEL_HMR}
-            - VITE_SERVER_KEY=${DEV_SERVER_KEY}
-            - VITE_SERVER_CERT=${DEV_SERVER_CERT}
-            - VITE_SERVER_CERTPATH=../../..${CERTS_PATH}
+            VITE_SERVER_CRT: /home/step/renewer/site.crt
+            VITE_SERVER_KEY: /home/step/renewer/site.key
+            VITE_SERVER_HMR: default.test
         volumes:
             - step:/home/step/renewer:ro
-            - ./laravel/src:/var/www/html
+            - ./php/src:/home/node/src
         networks:
             - local
         ports:
@@ -100,7 +100,7 @@ services:
         image: test/nginx:latest
         volumes:
             - step:/home/step/renewer:ro
-            - ./laravel/src:/var/www/html
+            - ./php/src:/home/php/src
             - ./nginx/backend:/etc/nginx/conf.d
         networks:
             - backend
@@ -114,12 +114,16 @@ services:
     app:
         image: test/vue:latest
         environment:
-            - VITE_SERVER_KEY=${DEV_SERVER_KEY}
-            - VITE_SERVER_CERT=${DEV_SERVER_CERT}
-            - VITE_SERVER_CERTPATH=../../..${CERTS_PATH}
+            VITE_SERVER_CRT: /home/step/renewer/site.crt
+            VITE_SERVER_KEY: /home/step/renewer/site.key
+            VITE_BASE_URL: app.default.local
+            VITE_BACKEND_URL: default.local
+            VITE_WS_URL: ws.default.local
+            VITE_OAUTH_CLIENT: 
+            VITE_TEST_OAUTH_CLIENT: 
         volumes:
             - step:/home/step/renewer:ro
-            - ./vue/app:/usr/share/nginx/html
+            - ./node/vue/app:/home/node/app
         networks:
             - local
         ports:
@@ -131,7 +135,7 @@ services:
         image: test/nginx:latest
         volumes:
             - step:/home/step/renewer:ro
-            - ./vuejs-app:/usr/share/nginx/html
+            - ./node/vue/app:/home/node/app
             - ./nginx/frontend:/etc/nginx/conf.d
         networks:
             - local
@@ -144,14 +148,12 @@ services:
     ws:
         image: test/websockets:latest
         environment:
-            - WS_SERVER_KEY=${DEV_SERVER_KEY}
-            - WS_SERVER_CERT=${DEV_SERVER_CERT}
-            - WS_PORT=5000
-            - REDIS_HOST=memory
-            - REDIS_PORT=6379
+            WS_SERVER_CRT: /home/step/renewer/site.crt
+            WS_SERVER_KEY: /home/step/renewer/site.key
+            REDIS_HOST: memory
         volumes:
             - step:/home/step/renewer:ro
-            - ./ws:/home/node/ws
+            - ./node/websockets/ws:/home/node/ws
         networks:
             - redis
             - local
