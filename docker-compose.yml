@@ -114,8 +114,7 @@ services:
     app:
         image: test/vue:latest
         environment:
-            VITE_SERVER_CRT: /home/step/renewer/site.crt
-            VITE_SERVER_KEY: /home/step/renewer/site.key
+            VITE_STEPPATH: /home/step/renewer
             VITE_BASE_URL: app.default.local
             VITE_BACKEND_URL: default.local
             VITE_WS_URL: ws.default.local

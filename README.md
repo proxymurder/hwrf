@@ -6,7 +6,7 @@ Proxyd works with three submodules:
 -   [node/vue/app](https://github.com/proxymurder/vue-template) submodule which contain the vite generated static files for VueJS progressive web app (PWA). Vue template is replicable, to a point where most frontend code will be housed inside of `node/vue`, all of them using the same OAuth endpoints to authorize and validate data, aswell as the same Nginx frontend file, or a variant using another root directory.
 -   [node/websockets/ws](https://github.com/proxymurder/ws-template) submodule which run's all of the in house websocket connections, utilities and optional express app.
 
-All three submodules, aswell as proxyd repositoy, are templates and should be created on new proxyd project.
+All three submodules, aswell as proxyd repositoy, are templates and should be re-created too on new proxyd project.
 
 ## Makefile
 
