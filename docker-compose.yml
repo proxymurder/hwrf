@@ -83,9 +83,9 @@ services:
     nphp:
         image: test/nphp:latest
         environment:
-            VITE_SERVER_CRT: /home/step/renewer/site.crt
-            VITE_SERVER_KEY: /home/step/renewer/site.key
-            VITE_SERVER_HMR: default.test
+            VITE_STEPPATH: /home/step/renewer
+            VITE_HMR_HOST: default.test
+            VITE_HMR_CLIENTPORT: 443
         volumes:
             - step:/home/step/renewer:ro
             - ./php/src:/home/node/src

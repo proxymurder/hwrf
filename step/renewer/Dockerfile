@@ -15,6 +15,8 @@ RUN chmod 0644 /etc/crontabs/root
 
 # Install workdir
 RUN mkdir -p /home/step/renewer
+RUN chown step:step /home/step/renewer
+
 WORKDIR /home/step/renewer
 
 USER step

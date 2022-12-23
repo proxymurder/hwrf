@@ -21,6 +21,8 @@ RUN chmod +x /docker-certificates-entrypoint
 
 # Install workdir
 RUN mkdir -p /home/step/certificates
+RUN chown step:step /home/step/certificates
+
 WORKDIR /home/step/certificates
 
 USER step
