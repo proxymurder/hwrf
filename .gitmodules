@@ -1,9 +1,9 @@
-[submodule "node-websockets-ws"]
-	path = node/websockets/ws
+[submodule "websockets-ws"]
+	path = websockets/ws
 	url = https://github.com/proxymurder/ws-template.git
-[submodule "node-vue-app"]
-	path = node/vue/app
+[submodule "vue-app"]
+	path = vue/app
 	url = https://github.com/proxymurder/vue-template.git
-[submodule "php-src"]
-	path = php/src
+[submodule "laravel-src"]
+	path = laravel/src
 	url = https://github.com/proxymurder/laravel-template.git

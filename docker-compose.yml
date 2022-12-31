@@ -147,8 +147,7 @@ services:
     ws:
         image: test/websockets:latest
         environment:
-            WS_SERVER_CRT: /home/step/renewer/site.crt
-            WS_SERVER_KEY: /home/step/renewer/site.key
+            WS_STEPPATH: /home/step/renewer
             REDIS_HOST: memory
         volumes:
             - step:/home/step/renewer:ro

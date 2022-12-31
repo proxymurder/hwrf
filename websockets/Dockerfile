@@ -18,4 +18,4 @@ RUN mkdir -p /home/node/ws
 
 USER node
 
-CMD ["node", "server.js"]
+CMD ["node", "index.js"]
