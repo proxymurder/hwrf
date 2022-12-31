@@ -46,13 +46,13 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 RUN printf '%s\n\n%s' '#!/bin/sh' 'php artisan "$@"' > /usr/local/bin/artisan
 RUN chmod +x /usr/local/bin/artisan
 
-RUN addgroup -g 1000 php
-RUN adduser -u 1000 -D -S -G php php
+RUN addgroup -g 1000 laravel
+RUN adduser -u 1000 -D -S -G laravel laravel
 
-RUN mkdir -p /home/php/src
-WORKDIR /home/php/src
+RUN mkdir -p /home/laravel/src
+WORKDIR /home/laravel/src
 
-USER php
+USER laravel
 
 # NodeJS backend image
 FROM node:alpine as nphp

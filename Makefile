@@ -1,27 +1,27 @@
 all: build-test local
 
-build-test: build-test-step build-test-php build-test-node build-test-servers
+test: test-step test-php test-node test-servers
 
-build-test-step: test-certificates test-renewer
+test-step: test-certificates test-renewer
 
-build-test-php: test-php test-nphp
+test-php: test-laravel test-nphp
 
-build-test-node: test-vue test-websockets
+test-node: test-vue test-websockets
 
-build-test-servers: test-nginx
+test-servers: test-nginx
 
 test-certificates:
 	docker build -t test/certificates:latest ./step/certificates
 test-renewer:
 	docker build -t test/renewer:latest ./step/renewer
-test-php:
-	docker build -t test/php:latest --target php ./php
+test-laravel:
+	docker build -t test/laravel:latest --target php ./laravel
 test-nphp:
-	docker build -t test/nphp:latest --target nphp ./php
+	docker build -t test/nphp:latest --target nphp ./laravel
 test-vue:
-	docker build -t test/vue:latest ./node/vue
+	docker build -t test/vue:latest ./vue
 test-websockets:
-	docker build -t test/websockets:latest ./node/websockets
+	docker build -t test/websockets:latest ./websockets
 test-nginx:
 	docker build -t test/nginx:latest ./nginx 
 

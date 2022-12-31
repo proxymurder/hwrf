@@ -69,9 +69,9 @@ services:
         ports:
             - 6379
     php:
-        image: test/php:latest
+        image: test/laravel:latest
         volumes:
-            - ./php/src:/home/php/src
+            - ./laravel/src:/home/laravel/src
         networks:
             - backend
             - redis
@@ -88,7 +88,7 @@ services:
             VITE_HMR_CLIENTPORT: 443
         volumes:
             - step:/home/step/renewer:ro
-            - ./php/src:/home/node/src
+            - ./laravel/src:/home/node/src
         networks:
             - local
         ports:
@@ -100,7 +100,7 @@ services:
         image: test/nginx:latest
         volumes:
             - step:/home/step/renewer:ro
-            - ./php/src:/home/php/src
+            - ./laravel/src:/home/laravel/src
             - ./nginx/backend:/etc/nginx/conf.d
         networks:
             - backend
@@ -122,7 +122,7 @@ services:
             VITE_TEST_OAUTH_CLIENT: 
         volumes:
             - step:/home/step/renewer:ro
-            - ./node/vue/app:/home/node/app
+            - ./vue/app:/home/node/app
         networks:
             - local
         ports:
@@ -134,7 +134,7 @@ services:
         image: test/nginx:latest
         volumes:
             - step:/home/step/renewer:ro
-            - ./node/vue/app:/home/node/app
+            - ./vue/app:/home/node/app
             - ./nginx/frontend:/etc/nginx/conf.d
         networks:
             - local
@@ -151,7 +151,7 @@ services:
             REDIS_HOST: memory
         volumes:
             - step:/home/step/renewer:ro
-            - ./node/websockets/ws:/home/node/ws
+            - ./websockets/ws:/home/node/ws
         networks:
             - redis
             - local
