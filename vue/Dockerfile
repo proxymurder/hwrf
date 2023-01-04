@@ -12,8 +12,10 @@ RUN npm install -g \
     npm \
     npm-check-updates
 
-RUN mkdir -p /home/node/app
-WORKDIR /home/node/app
+RUN mkdir -p /var/www/html
+RUN chown node:node /var/www/html
+
+WORKDIR /var/www/html
 
 USER node
 

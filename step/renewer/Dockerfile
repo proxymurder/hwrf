@@ -4,24 +4,24 @@ USER root
 
 # Install executables
 COPY ./renewer.sh /renewer.sh
-COPY ./docker-renewer-entrypoint /docker-renewer-entrypoint
+COPY ./docker-entrypoint /docker-entrypoint
 
 # Install crontabs
 ADD ./crontab /etc/crontabs/root
 
 # Install permissions
-RUN chmod +x /renewer.sh /docker-renewer-entrypoint
+RUN chmod +x /renewer.sh /docker-entrypoint
 RUN chmod 0644 /etc/crontabs/root
 
 # Install workdir
-RUN mkdir -p /home/step/renewer
-RUN chown step:step /home/step/renewer
+RUN mkdir -p /var/local/step
+RUN chown step:step /var/local/step
 
-WORKDIR /home/step/renewer
+WORKDIR /var/local/step
 
 USER step
 
 # Install certificates
-ENTRYPOINT ["/docker-renewer-entrypoint"]
+ENTRYPOINT ["/docker-entrypoint"]
 
 CMD ["/usr/sbin/crond", "-l", "2", "-f"]

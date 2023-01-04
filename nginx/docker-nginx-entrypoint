@@ -1,9 +1,0 @@
-#!/bin/sh
-# Wait for renewer
-sleep 10
-
-# watch certificates and reload nginx
-/certwatch.sh &
-
-# Run CMD
-exec "${@}"

@@ -1,11 +1,11 @@
 networks:
-    backend:
-        driver: bridge
-    local:
+    step:
         driver: bridge
     redis:
         driver: bridge
-    step:
+    backend:
+        driver: bridge
+    local:
         driver: bridge
     www:
         driver: bridge
@@ -23,10 +23,11 @@ services:
     certificates:
         image: test/certificates:latest
         environment:
+            STEPPATH: /home/step
             STEPCA_INIT_NAME: Development
             STEPCA_INIT_DNS: certificates
         volumes:
-            - ./step/certificates/tmp:/home/step/certificates
+            - ./step/certificates/tmp:/home/step
         networks:
             - step
         ports:
@@ -36,12 +37,12 @@ services:
         environment:
             STEP_INIT_DNS: default proxyd
             STEP_CA_URL: https://certificates:5739
-            STEP_FINGERPRINT: 673faa2736cfab929271386853878ad0a7413ec52bdbaceebb6fddfc8de67212
-            STEP_KID: HrjM7KHlS6O2N-42XuXvvFSu86w18SODvlux4SGfKKg
+            STEP_FINGERPRINT: 55953348a481cb7acd0d9adc9c4dfdc5e2086955a6ac0772a78f67c3f9121647
+            STEP_KID: CcOa-V98ehJwsf_M7Rrujefuzn__Uf5_S-3Dni1IndU
             STEP_PASSWORD_FILE: /run/secrets/password
-            STEP_ROOT: /home/step/renewer/root_ca.crt
+            STEP_ROOT: /var/local/step/root_ca.crt
         volumes:
-            - step:/home/step/renewer
+            - step:/var/local/step
         secrets:
             - password
         networks:
@@ -71,7 +72,7 @@ services:
     php:
         image: test/laravel:latest
         volumes:
-            - ./laravel/src:/home/laravel/src
+            - ./laravel/src:/var/www/html
         networks:
             - backend
             - redis
@@ -83,12 +84,12 @@ services:
     nphp:
         image: test/nphp:latest
         environment:
-            VITE_STEPPATH: /home/step/renewer
+            VITE_STEPPATH: /var/local/step
             VITE_HMR_HOST: default.test
             VITE_HMR_CLIENTPORT: 443
         volumes:
-            - step:/home/step/renewer:ro
-            - ./laravel/src:/home/node/src
+            - step:/var/local/step:ro
+            - ./laravel/src:/var/www/html
         networks:
             - local
         ports:
@@ -99,8 +100,8 @@ services:
     backend:
         image: test/nginx:latest
         volumes:
-            - step:/home/step/renewer:ro
-            - ./laravel/src:/home/laravel/src
+            - step:/var/local/step:ro
+            - ./laravel/src:/var/www/html
             - ./nginx/backend:/etc/nginx/conf.d
         networks:
             - backend
@@ -114,15 +115,15 @@ services:
     app:
         image: test/vue:latest
         environment:
-            VITE_STEPPATH: /home/step/renewer
+            VITE_STEPPATH: /var/local/step
             VITE_BASE_URL: app.default.local
             VITE_BACKEND_URL: default.local
             VITE_WS_URL: ws.default.local
             VITE_OAUTH_CLIENT: 
             VITE_TEST_OAUTH_CLIENT: 
         volumes:
-            - step:/home/step/renewer:ro
-            - ./vue/app:/home/node/app
+            - step:/var/local/step:ro
+            - ./vue/app:/var/www/html
         networks:
             - local
         ports:
@@ -133,8 +134,8 @@ services:
     frontend:
         image: test/nginx:latest
         volumes:
-            - step:/home/step/renewer:ro
-            - ./vue/app:/home/node/app
+            - step:/var/local/step:ro
+            - ./vue/app:/var/www/html
             - ./nginx/frontend:/etc/nginx/conf.d
         networks:
             - local
@@ -147,11 +148,11 @@ services:
     ws:
         image: test/websockets:latest
         environment:
-            WS_STEPPATH: /home/step/renewer
+            WS_STEPPATH: /var/local/step
             REDIS_HOST: memory
         volumes:
-            - step:/home/step/renewer:ro
-            - ./websockets/ws:/home/node/ws
+            - step:/var/local/step:ro
+            - ./websockets/ws:/var/www/websockets
         networks:
             - redis
             - local
@@ -164,7 +165,7 @@ services:
     local:
         image: test/nginx:latest
         volumes:
-            - step:/home/step/renewer:ro
+            - step:/var/local/step:ro
             - ./nginx/local:/etc/nginx/conf.d
         networks:
             - local
@@ -181,7 +182,7 @@ services:
     www:
         image: test/nginx:latest
         volumes:
-            - step:/home/step/renewer:ro
+            - step:/var/local/step:ro
             - ./nginx/www:/etc/nginx/conf.d
         networks:
             - www

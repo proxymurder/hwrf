@@ -49,8 +49,10 @@ RUN chmod +x /usr/local/bin/artisan
 RUN addgroup -g 1000 laravel
 RUN adduser -u 1000 -D -S -G laravel laravel
 
-RUN mkdir -p /home/laravel/src
-WORKDIR /home/laravel/src
+RUN mkdir -p /var/www/html
+RUN chown laravel:laravel /var/www/html
+
+WORKDIR /var/www/html
 
 USER laravel
 
@@ -67,8 +69,10 @@ RUN apk add --no-cache \
 # Install/Update npm global dependencies
 RUN npm install -g npm npm-check-updates
 
-RUN mkdir -p /home/node/src
-WORKDIR /home/node/src
+RUN mkdir -p /var/www/html
+RUN chown node:node /var/www/html
+
+WORKDIR /var/www/html
 
 USER node
 

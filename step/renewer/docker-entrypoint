@@ -1,6 +1,6 @@
 #!/bin/sh
-export SITECRT=/home/step/renewer/site.crt
-export SITEKEY=/home/step/renewer/site.key
+export SITECRT=/var/local/step/site.crt
+export SITEKEY=/var/local/step/site.key
 COMMON_NAME="${STEP_INIT_NAME:-local.site}"
 function __root () {
     rm -f "${STEP_ROOT}"

@@ -14,20 +14,20 @@ RUN apk add --no-cache libcap
 RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/local/bin/step-ca
 
 # Install executables
-COPY ./docker-certificates-entrypoint /docker-certificates-entrypoint
+COPY ./docker-entrypoint /docker-entrypoint
 
 # Install permissions
-RUN chmod +x /docker-certificates-entrypoint
+RUN chmod +x /docker-entrypoint
 
 # Install workdir
-RUN mkdir -p /home/step/certificates
-RUN chown step:step /home/step/certificates
+RUN mkdir -p /home/step
+RUN chown step:step /home/step
 
-WORKDIR /home/step/certificates
+WORKDIR /home/step
 
 USER step
 
 # Initialize certificate authority
-ENTRYPOINT ["/docker-certificates-entrypoint"]
+ENTRYPOINT ["/docker-entrypoint"]
 
 CMD ["step-ca", "--password-file", "password", "config/ca.json"]

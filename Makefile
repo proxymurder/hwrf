@@ -1,4 +1,4 @@
-all: build-test local
+all: test local
 
 test: test-step test-php test-node test-servers
 

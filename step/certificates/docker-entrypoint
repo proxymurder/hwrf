@@ -1,8 +1,7 @@
 #!/bin/sh
 set -eo pipefail
-export STEPPATH=/home/step/certificates
-export CONFPATH=/home/step/certificates/config/ca.json
-export PWDPATH=/home/step/certificates/password
+export CONFPATH=${STEPPATH}/config/ca.json
+export PWDPATH=${STEPPATH}/password
 ERR=0
 function __init () {
     __required STEPCA_INIT_NAME STEPCA_INIT_DNS
