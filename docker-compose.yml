@@ -37,8 +37,8 @@ services:
         environment:
             STEP_INIT_DNS: default proxyd
             STEP_CA_URL: https://certificates:5739
-            STEP_FINGERPRINT: 55953348a481cb7acd0d9adc9c4dfdc5e2086955a6ac0772a78f67c3f9121647
-            STEP_KID: CcOa-V98ehJwsf_M7Rrujefuzn__Uf5_S-3Dni1IndU
+            STEP_FINGERPRINT: 4f2f36e1abf030cddb830d73574af963281fb286df527a0e054ceaf76d58673d
+            STEP_KID: Li0E3bPNtHB_yQS1ycfpkoV9t4USgG3ej9ttS8VKVPk
             STEP_PASSWORD_FILE: /run/secrets/password
             STEP_ROOT: /var/local/step/root_ca.crt
         volumes:

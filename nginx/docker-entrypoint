@@ -1,6 +1,4 @@
 #!/bin/sh
 sleep 10
-
 /certwatch.sh &
-
 exec "${@}"
