@@ -1,4 +1,4 @@
-FROM php:fpm-alpine as php
+FROM php:fpm-alpine
 
 USER root
 
@@ -55,25 +55,3 @@ RUN chown laravel:laravel /var/www/html
 WORKDIR /var/www/html
 
 USER laravel
-
-# NodeJS backend image
-FROM node:alpine as nphp
-
-USER root
-
-# Install dependencies
-RUN apk update
-RUN apk add --no-cache \
-    git 
-
-# Install/Update npm global dependencies
-RUN npm install -g npm npm-check-updates
-
-RUN mkdir -p /var/www/html
-RUN chown node:node /var/www/html
-
-WORKDIR /var/www/html
-
-USER node
-
-CMD ["npm", "run", "dev"]
