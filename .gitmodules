@@ -1,9 +1,15 @@
-[submodule "websockets-ws"]
-	path = websockets/ws
-	url = https://github.com/proxymurder/ws-template.git
-[submodule "vue-app"]
-	path = vue/app
-	url = https://github.com/proxymurder/vue-template.git
-[submodule "laravel-src"]
-	path = laravel/src
-	url = https://github.com/proxymurder/laravel-template.git
+[submodule "proxymurder/nginx-server"]
+	path = server
+	url = https://github.com/proxymurder/nginx-server.git
+[submodule "proxymurder/node-frontend-vue"]
+	path = vue
+	url = https://github.com/proxymurder/node-frontend-vue.git
+[submodule "proxymurder/node-ws"]
+	path = ws
+	url = https://github.com/proxymurder/node-ws.git
+[submodule "proxymurder/php-laravel"]
+	path = laravel
+	url = https://github.com/proxymurder/php-laravel.git
+[submodule "proxymurder/smallstep-renewer"]
+	path = renewer
+	url = https://github.com/proxymurder/smallstep-renewer.git

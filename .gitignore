@@ -14,3 +14,10 @@
 *.njsproj
 *.sln
 *.sw?
+
+# Smallstep certificates 
+/ca
+/certificates
+/https
+/smallstep
+/ssl
