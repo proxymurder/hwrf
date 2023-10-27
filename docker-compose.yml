@@ -18,9 +18,9 @@ volumes:
         driver: local
 secrets:
     password:
-        file: ./servers/ssl/secrets/password
+        file: ./ssl/secrets/password
     provisioner_password:
-        file: ./servers/ssl/secrets/provisioner_password
+        file: ./ssl/secrets/provisioner_password
 services:
     certificates:
         image: smallstep/step-ca:latest
@@ -31,13 +31,13 @@ services:
             DOCKER_STEPCA_INIT_ADDRESS: :5739
 
         volumes:
-            - ./servers/ssl:/home/step
+            - ./ssl:/home/step
         networks:
             - step
         ports:
             - 5739
     renewer:
-        image: test/step-cli:renewer
+        image: proxymurder/step:renewer
         environment:
             STEP_INIT_DNS: default proxyd
             STEP_CA_URL: https://certificates:5739
@@ -76,7 +76,7 @@ services:
         ports:
             - 6379
     php:
-        image: test/php:laravel
+        image: proxymurder/php:laravel
         volumes:
             - ./laravel/src:/var/www/html
         networks:
@@ -88,7 +88,7 @@ services:
             - db
             - memory
     nphp:
-        image: test/node:laravel
+        image: proxymurder/node:laravel
         environment:
             VITE_STEPPATH: /var/local/step
             VITE_HMR_HOST: default.test
@@ -104,16 +104,17 @@ services:
             - renewer
             - php
     backend:
-        image: proxymurder/nginx:php
+        image: proxymurder/nginx:latest
         environment:
-            NG_SERVER_PORT: 6000
-            NG_SERVER_NAME: localhost
-            NG_SERVER_SAN: '*.localhost'
-            NG_SERVER_ROOT: /var/www/html/public
-            NG_SERVER_PHP: php:9000
-            NG_SERVER_HTTPS: /var/local/step
-            NG_SERVER_OUT: /etc/nginx/conf.d/default.conf
-            NG_DEBUG: 0
+            NGCONF_PORT: 6000
+            NGCONF_NAME: localhost
+            NGCONF_SAN: '*.localhost'
+            NGCONF_ROOT: /var/www/html/public
+            NGCONF_LOG: /var/log/nginx
+            # NGCONF_PHP: php:9000
+            NGCONF_HTTPS: /var/local/step
+            # NGCONF_OUT: /etc/nginx/conf.d/default.conf
+            NGCONF_DEBUG: 0
         volumes:
             - step:/var/local/step:ro
             - ./laravel/src:/var/www/html
@@ -127,7 +128,7 @@ services:
             - renewer
             - php
     app:
-        image: test/node:vue
+        image: proxymurder/vue:dev
         environment:
             VITE_STEPPATH: /var/local/step
             VITE_BASE_URL: app.default.local
@@ -146,7 +147,7 @@ services:
             - renewer
             - php
     frontend:
-        image: test/nginx:latest
+        image: proxymurder/nginx:node
         volumes:
             - step:/var/local/step:ro
             - ./vue/app:/var/www/html
@@ -160,7 +161,7 @@ services:
             - renewer
             - php
     ws:
-        image: test/node:ws
+        image: proxymurder/node:ws
         environment:
             WS_STEPPATH: /var/local/step
             REDIS_HOST: memory
@@ -177,7 +178,7 @@ services:
             - renewer
             - memory
     local:
-        image: test/nginx:latest
+        image: proxymurder/nginx:proxy
         volumes:
             - step:/var/local/step:ro
             - ./servers/local:/etc/nginx/conf.d
@@ -194,7 +195,7 @@ services:
             - frontend
             - ws
     www:
-        image: test/nginx:latest
+        image: proxymurder/nginx:proxy
         volumes:
             - step:/var/local/step:ro
             - ./servers/www:/etc/nginx/conf.d
