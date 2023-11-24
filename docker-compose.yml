@@ -104,17 +104,17 @@ services:
             - renewer
             - php
     backend:
-        image: proxymurder/nginx:latest
+        image: proxymurder/server:latest
         environment:
-            NGCONF_PORT: 6000
-            NGCONF_NAME: localhost
-            NGCONF_SAN: '*.localhost'
-            NGCONF_ROOT: /var/www/html/public
-            NGCONF_LOG: /var/log/nginx
-            # NGCONF_PHP: php:9000
-            NGCONF_HTTPS: /var/local/step
-            # NGCONF_OUT: /etc/nginx/conf.d/default.conf
-            NGCONF_DEBUG: 0
+            SERVER_PORT: 6000
+            SERVER_NAME: localhost
+            SERVER_SAN: "*.localhost"
+            SERVER_HTTPS: /var/local/step
+            SERVER_LOG: /var/log/nginx
+            SERVER_ROOT: /var/www/html/public
+            SERVER_INDEX: index.html index.php
+            SERVER_LOCATION: value=$$uri $$uri/ /index.php?$$query_string
+            SERVER_PHP: php:9000
         volumes:
             - step:/var/local/step:ro
             - ./laravel/src:/var/www/html
