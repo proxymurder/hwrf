@@ -1,15 +1,19 @@
 [submodule "proxymurder/servers"]
 	path = servers
 	url = https://github.com/proxymurder/servers.git
+
 [submodule "proxymurder/vite"]
 	path = vite
 	url = https://github.com/proxymurder/vite.git
+
 [submodule "proxymurder/sockets"]
 	path = sockets
 	url = https://github.com/proxymurder/sockets.git
+	
 [submodule "proxymurder/php"]
 	path = php
 	url = https://github.com/proxymurder/php.git
-[submodule "proxymurder/smallstep]
+	
+[submodule "proxymurder/php"]
 	path = smallstep
 	url = https://github.com/proxymurder/smallstep.git
