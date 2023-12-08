@@ -14,6 +14,6 @@
 	path = php
 	url = https://github.com/proxymurder/php.git
 	
-[submodule "proxymurder/php"]
+[submodule "proxymurder/smallstep"]
 	path = smallstep
 	url = https://github.com/proxymurder/smallstep.git
