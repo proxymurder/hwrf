@@ -1,0 +1,55 @@
+- server:
+      port: 443
+      domain:
+          subject: default.local
+      https: /var/local/step
+      log: /var/log/nginx
+      locations:
+          - type: proxy_pass
+            value: https://backend:6000
+            include: /etc/nginx/includes/default.proxy.conf
+      redirect: 80
+- server:
+      port: 443
+      domain:
+          subject: app.default.local
+      https: /var/local/step
+      log: /var/log/nginx
+      locations:
+          - type: proxy_pass
+            value: https://frontend:3000
+            include: /etc/nginx/includes/default.proxy.conf
+      redirect: 80
+- server:
+      port: 443
+      domain:
+          subject: default.test
+      https: /var/local/step
+      log: /var/log/nginx
+      locations:
+          - type: proxy_pass
+            value: https://laravel:5173
+            include: /etc/nginx/includes/default.proxy.conf
+      redirect: 80
+- server:
+      port: 443
+      domain:
+          subject: app.default.test
+      https: /var/local/step
+      log: /var/log/nginx
+      locations:
+          - type: proxy_pass
+            value: https://app:5173
+            include: /etc/nginx/includes/default.proxy.conf
+      redirect: 80
+- server:
+      port: 443
+      domain:
+          subject: wss.default.test
+      https: /var/local/step
+      log: /var/log/nginx
+      locations:
+          - type: proxy_pass
+            value: https://wss:5555
+            include: /etc/nginx/includes/default.proxy.conf
+      redirect: 80
