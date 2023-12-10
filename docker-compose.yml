@@ -16,9 +16,9 @@ volumes:
         driver: local
 secrets:
     password:
-        file: ./ssl/secrets/password
+        file: ./step/secrets/password
     provisioner_password:
-        file: ./ssl/secrets/provisioner_password
+        file: ./step/secrets/provisioner_password
 services:
     step:
         image: smallstep/step-ca:latest
@@ -28,7 +28,7 @@ services:
             DOCKER_STEPCA_INIT_DNS_NAMES: step
             DOCKER_STEPCA_INIT_ADDRESS: :5739
         volumes:
-            - ./ssl:/home/step
+            - ./step:/home/step
         networks:
             - step
     smallstep:
@@ -36,8 +36,8 @@ services:
         environment:
             STEP_INIT_DNS: default
             STEP_CA_URL: https://step:5739
-            STEP_FINGERPRINT: 2fc1579032a34e6a37a3eb46c9cb3b90e5db632d966b81480332cffc433100c7
-            STEP_KID: o3b64QSjlXdHwBt3RYtUgZPgH_t35AmNLMTqRg_KDE8
+            STEP_FINGERPRINT: a91f9a3e563af85bb2252b726a417561238e91902c9a892c39499c7091c0bb0f
+            STEP_KID: PTJ7XR_ZpzZGx78Fs6fr1jKAIHU-Ub1x0v8fuqI53LM
             STEP_PASSWORD_FILE: /run/secrets/password
             STEP_PROVISIONER_PASSWORD_FILE: /run/secrets/provisioner_password
             STEP_ROOT: /var/local/step/root_ca.crt
@@ -73,7 +73,7 @@ services:
     php:
         image: proxymurder/php:latest
         volumes:
-            - ./laravel/src:/var/www/html
+            - ./php/src:/var/www/html
         networks:
             - backend
             - redis
@@ -83,13 +83,13 @@ services:
             - mysql
             - redis
     wss:
-        image: proxymurder/node:ws
+        image: proxymurder/websockets:latest
         environment:
             WS_STEPPATH: /var/local/step
             REDIS_HOST: redis
         volumes:
             - smallstep:/var/local/step:ro
-            - ./ws/app:/var/www/websockets
+            - ./sockets/websockets/app:/var/www/websockets
         networks:
             - redis
             - www
@@ -106,7 +106,7 @@ services:
             VITE_HMR_CLIENTPORT: 443
         volumes:
             - smallstep:/var/local/step:ro
-            - ./laravel/src:/var/www/html
+            - ./php/src:/var/www/html
         networks:
             - backend
             - www
@@ -135,13 +135,13 @@ services:
             - smallstep
             - php
     backend:
-        image: proxymurder/camarero:latest
+        image: proxymurder/servers:latest
         environment:
             SERVER_YAML: /etc/nginx/yaml/default.php.yaml
             SERVER_WATCH_CRT: /var/local/step/site.crt
         volumes:
             - smallstep:/var/local/step:ro
-            - ./laravel/src:/var/www/html
+            - ./php/src:/var/www/html
         networks:
             - backend
             - www
@@ -151,13 +151,13 @@ services:
             - smallstep
             - php
     frontend:
-        image: proxymurder/camarero:latest
+        image: proxymurder/servers:latest
         environment:
             SERVER_YAML: /etc/nginx/yaml/default.js.yaml
             SERVER_WATCH_CRT: /var/local/step/site.crt
         volumes:
             - smallstep:/var/local/step:ro
-            - ./vue/app:/var/www/html
+            - ./vite/app:/var/www/html
         networks:
             - www
         ports:
@@ -166,10 +166,10 @@ services:
             - smallstep
             - php
     www:
-        image: proxymurder/camarero:latest
+        image: proxymurder/servers:latest
         environment:
             SERVER_YAML: /etc/nginx/yaml/proxy.yaml
-            SERVER_WATCH_CRT: /var/local/step         
+            SERVER_WATCH_CRT: /var/local/step/site.crt  
         volumes:
             - smallstep:/var/local/step:ro
             - ./proxy.yaml:/etc/nginx/yaml/proxy.yaml
@@ -181,7 +181,7 @@ services:
         depends_on:
             - smallstep
             - laravel
+            - wss
             - app
             - backend
             - frontend
-            - wss
