@@ -82,7 +82,7 @@ services:
         depends_on:
             - mysql
             - redis
-    wss:
+    websock:
         image: proxymurder/websockets:latest
         environment:
             WS_STEPPATH: /var/local/step
@@ -94,7 +94,7 @@ services:
             - redis
             - www
         ports:
-            - 5555
+            - 5000
         depends_on:
             - smallstep
             - redis
@@ -119,11 +119,6 @@ services:
         image: proxymurder/vite:latest
         environment:
             VITE_STEPPATH: /var/local/step
-            VITE_BASE_URL: app.default.local
-            VITE_BACKEND_URL: default.local
-            VITE_WS_URL: ws.default.local
-            VITE_OAUTH_CLIENT: 
-            VITE_TEST_OAUTH_CLIENT: 
         volumes:
             - smallstep:/var/local/step:ro
             - ./vite/app:/var/www/html
@@ -181,7 +176,7 @@ services:
         depends_on:
             - smallstep
             - laravel
-            - wss
+            - websock
             - app
             - backend
             - frontend
